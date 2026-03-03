@@ -63,12 +63,7 @@ export default defineConfig(
   tseslint.configs.recommended,
   prettierConfig,
 
-  globalIgnores([
-    'node_modules/**',
-    'dist/**',
-    '**/*.js',
-    '**/*.d.ts',
-  ]),
+  globalIgnores(['node_modules/**', 'dist/**', '**/*.js', '**/*.d.ts']),
 
   {
     files: ['**/*.ts'],

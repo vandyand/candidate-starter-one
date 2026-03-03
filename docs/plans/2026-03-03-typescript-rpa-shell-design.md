@@ -59,6 +59,7 @@ candidate-starter-one/
 **`src/index.ts`** — top-level entry point that imports and calls `run()` from the automation module. Candidates can extend or replace this as needed.
 
 **`src/automation/example.ts`** — a stub automation function demonstrating the Playwright browser lifecycle:
+
 - `chromium.launch({ headless: true })`
 - `browser.newPage()`
 - `page.goto(url)` — placeholder URL with `// TODO:` comment
@@ -84,17 +85,17 @@ This gives candidates a concrete shape to extend without prescribing design patt
 
 ### `package.json` Scripts
 
-| Script           | Purpose                                    |
-|------------------|--------------------------------------------|
-| `build`          | `tsc` — compile TypeScript to `dist/`      |
-| `clean`          | `rm -rf dist` — remove build output        |
-| `start`          | `node dist/index.js` — run compiled output |
-| `dev`            | `ts-node src/index.ts` — run from source   |
-| `test`           | `jest`                                     |
-| `lint`           | `eslint .`                                 |
-| `lint:fix`       | `eslint . --fix`                           |
-| `format`         | `prettier --write .`                       |
-| `format:check`   | `prettier --check .`                       |
+| Script         | Purpose                                    |
+| -------------- | ------------------------------------------ |
+| `build`        | `tsc` — compile TypeScript to `dist/`      |
+| `clean`        | `rm -rf dist` — remove build output        |
+| `start`        | `node dist/index.js` — run compiled output |
+| `dev`          | `ts-node src/index.ts` — run from source   |
+| `test`         | `jest`                                     |
+| `lint`         | `eslint .`                                 |
+| `lint:fix`     | `eslint . --fix`                           |
+| `format`       | `prettier --write .`                       |
+| `format:check` | `prettier --check .`                       |
 
 ### License Header
 
@@ -115,11 +116,11 @@ All `.ts` source files enforce a MIT license header via an inline ESLint plugin 
 
 ## Decisions & Rationale
 
-| Decision | Rationale |
-|----------|-----------|
-| `playwright` in `dependencies` | RPA is production code; browser is a runtime requirement |
-| `@playwright/test` excluded | Candidates use Jest for unit tests; test runner not needed |
-| `outDir: dist`, no `declaration` | Application, not a library; no consumers of type exports |
-| Flat `src/automation/` structure | Minimal orientation without prescribing design patterns |
-| MIT license | Public candidate-facing repo under lockboxai-public org |
-| No DCO | Not required for a candidate exercise starter |
+| Decision                         | Rationale                                                  |
+| -------------------------------- | ---------------------------------------------------------- |
+| `playwright` in `dependencies`   | RPA is production code; browser is a runtime requirement   |
+| `@playwright/test` excluded      | Candidates use Jest for unit tests; test runner not needed |
+| `outDir: dist`, no `declaration` | Application, not a library; no consumers of type exports   |
+| Flat `src/automation/` structure | Minimal orientation without prescribing design patterns    |
+| MIT license                      | Public candidate-facing repo under lockboxai-public org    |
+| No DCO                           | Not required for a candidate exercise starter              |

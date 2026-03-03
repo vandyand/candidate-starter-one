@@ -41,6 +41,7 @@ Every `.ts` file must begin with this exact block (enforced by ESLint — see Ta
 ## Task 1: Tooling config files
 
 **Files:**
+
 - Create: `.gitignore`
 - Create: `.editorconfig`
 - Create: `.prettierrc`
@@ -149,6 +150,7 @@ git commit -m "chore: add tooling config files"
 ## Task 2: `package.json` and `tsconfig.json`
 
 **Files:**
+
 - Create: `package.json`
 - Create: `tsconfig.json`
 
@@ -241,6 +243,7 @@ git commit -m "chore: add package.json and tsconfig.json"
 ## Task 3: Install dependencies and add Playwright
 
 **Files:**
+
 - Modified by yarn: `package.json` (playwright range added), `yarn.lock`
 
 **Step 1: Enable corepack and install Yarn 4**
@@ -285,6 +288,7 @@ git commit -m "chore: install dependencies and add playwright"
 ## Task 4: `jest.config.js`
 
 **Files:**
+
 - Create: `jest.config.js`
 
 **Step 1: Create `jest.config.js`**
@@ -318,6 +322,7 @@ git commit -m "chore: add jest config"
 ## Task 5: ESLint config
 
 **Files:**
+
 - Create: `eslint.config.mjs`
 
 **Step 1: Create `eslint.config.mjs`**
@@ -388,13 +393,7 @@ export default defineConfig(
   tseslint.configs.recommended,
   prettierConfig,
 
-  globalIgnores([
-    'node_modules/**',
-    'dist/**',
-    '**/*.js',
-    '**/*.d.ts',
-    '!eslint.config.mjs',
-  ]),
+  globalIgnores(['node_modules/**', 'dist/**', '**/*.js', '**/*.d.ts', '!eslint.config.mjs']),
 
   {
     files: ['**/*.ts'],
@@ -422,6 +421,7 @@ git commit -m "chore: add ESLint flat config with MIT header rule"
 ## Task 6: LICENSE file
 
 **Files:**
+
 - Create: `LICENSE`
 
 **Step 1: Create `LICENSE`**
@@ -462,6 +462,7 @@ git commit -m "chore: add MIT license"
 ## Task 7: Source stubs (TDD order — test first)
 
 **Files:**
+
 - Create: `test/automation/example.test.ts`
 - Create: `src/automation/example.ts`
 - Create: `src/index.ts`
@@ -645,6 +646,7 @@ git commit -m "feat: add RPA automation stub with jest unit tests"
 ## Task 8: GitHub community files
 
 **Files:**
+
 - Create: `.github/CODEOWNERS`
 - Create: `.github/dependabot.yml`
 - Create: `.github/PULL_REQUEST_TEMPLATE.md`
@@ -736,6 +738,7 @@ git commit -m "chore: add GitHub community files"
 ## Task 9: GitHub Actions workflows
 
 **Files:**
+
 - Create: `.github/workflows/ci.yml`
 - Create: `.github/workflows/release-please.yml`
 - Create: `.github/workflows/semantic-pr.yml`
@@ -864,6 +867,7 @@ git commit -m "ci: add GitHub Actions workflows (ci, release-please, semantic-pr
 ## Task 10: Release-please config
 
 **Files:**
+
 - Create: `release-please-config.json`
 - Create: `.release-please-manifest.json`
 
@@ -904,11 +908,12 @@ git commit -m "chore: add release-please config"
 ## Task 11: README
 
 **Files:**
+
 - Create: `README.md`
 
 **Step 1: Create `README.md`**
 
-```markdown
+````markdown
 # candidate-starter-one
 
 [![ci](https://github.com/jpfulton-lockboxai/candidate-starter-one/actions/workflows/ci.yml/badge.svg)](https://github.com/jpfulton-lockboxai/candidate-starter-one/actions/workflows/ci.yml)
@@ -938,6 +943,7 @@ yarn build
 # Run
 yarn start
 ```
+````
 
 ## Project Structure
 
@@ -974,14 +980,15 @@ Unit tests mock the Playwright browser API so no real browser is needed in CI. R
 Copyright (c) 2025-2026 Lockbox AI, Inc.
 
 Licensed under the [MIT License](LICENSE).
-```
+
+````
 
 **Step 2: Commit**
 
 ```bash
 git add README.md
 git commit -m "docs: add README"
-```
+````
 
 ---
 
@@ -1026,6 +1033,7 @@ git log --oneline
 ```
 
 Expected output (most recent first):
+
 ```
 docs: add README
 chore: add release-please config
