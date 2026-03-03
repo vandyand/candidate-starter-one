@@ -68,7 +68,6 @@ export default defineConfig(
     'dist/**',
     '**/*.js',
     '**/*.d.ts',
-    '!eslint.config.mjs',
   ]),
 
   {
@@ -80,6 +79,7 @@ export default defineConfig(
       'local-rules/license-header': 'error',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+      'no-console': 'warn',
     },
   },
 );
