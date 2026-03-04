@@ -1,0 +1,55 @@
+Welcome.
+Thank you for your interest in joining the engineering team at Lockbox AI. This portal contains the Asynchronous Exercises below. Please read each document carefully and follow all instructions provided before submitting.
+
+If you have any questions or need clarification, please email us at join@lockboxai.com.
+
+The Exercise Premise
+These exercises — and the way we review them — are grounded in a core belief: code and the artifacts produced in a software engineering workflow are the most reliable, enduring, and objective way to communicate concepts, practices, ideas, and intent. Commit messages, pull request descriptions, documentation, test coverage, and architectural decisions all tell a rich and verifiable story about how an engineer thinks, solves problems, and collaborates.
+
+We believe this approach is meaningfully better than traditional synchronous, verbal interview techniques. Live interviews rely heavily on the interpersonal rapport established between an applicant and a reviewer in a brief window of time. They are susceptible to a wide range of cognitive biases — from anchoring and confirmation bias to the halo effect. They are time-intensive for both parties, difficult to reproduce consistently across candidates, and produce evidence that can be clouded by factors entirely unrelated to engineering ability: stress levels, interview timing, environmental distractions, and the inherent pressure of real-time performance.
+
+The asynchronous model addresses these shortcomings directly. It allows an applicant to work on their own schedule, in an environment where they are most productive, and with the tools and resources they use every day. It equally allows one or more reviewers to evaluate the output independently, thoughtfully, and on their own time — unconstrained by scheduling conflicts or the pressures of a live conversation. The result is a fairer, more thorough, and more representative evaluation of the work an engineer is capable of producing.
+
+Please structure and approach the exercises with this premise in mind. Let the work speak for itself — through clean, well-organized code; meaningful commit history; clear documentation; and thoughtful engineering decisions.
+
+Licensing Model
+Each exercise is based on a public starter repository found on Lockbox AI's GitHub profile. The exercise details will specify which starter repository to use as your starting point.
+
+All starter repositories are published under the MIT License. By submitting work derived from a starter, you agree that your submission is provided to Lockbox AI under the same MIT License terms.
+
+AI-assisted Coding
+You are not only allowed to use AI-assisted development techniques when preparing your exercise submissions — you are actively encouraged to do so. The practice of software engineering has changed fundamentally. Reviewers at Lockbox AI understand this, and our evaluation reflects it. We are not looking for evidence that you can write boilerplate from memory. We are looking for evidence that you know how to leverage the full capability of your toolchain to produce better outcomes, faster.
+
+Consider committing the artifacts of your AI-assisted workflow directly to the repository you submit. These artifacts are informative and tell a meaningful story about how you work:
+
+CLAUDE.md, .cursor/rules/ — agent guidance and project conventions you defined to shape model behavior
+Skills and agent definitions — reusable automation you built to accelerate the workflow
+Intermediate planning documents — architectural notes, decision records, or design drafts produced during the process
+MCP configurations — if you used non-proprietary MCP tools, include your mcp.json so reviewers can see the surface area you connected to
+What reviewers want to see is the portion of the workflow that genuinely required you — your judgment, your taste, your architectural instincts, your ability to identify what matters. Show how you used the tooling to eliminate rote, mechanical implementation details. Show how you stayed at the top of your license: doing only the work that truly requires a skilled human in the loop, and delegating everything else. That is the signal we are looking for.
+
+Use Commit History to Demonstrate Experimentation and Failed Directions
+Nothing of genuine interest in software development is produced without first navigating a landscape of competing options — many of which dead-end. The instinct to hide that navigation, to present only a clean linear history of correct decisions, is understandable. Resist it. The path you took matters as much as where you landed.
+
+Spike. Investigate an approach that seems promising and push it until it breaks or reveals its limits. Explore the alternative that the obvious solution forecloses. Commit those experiments — even the ones you back out. A revert commit with a clear message explaining why the approach was abandoned is more informative than a pristine history that implies the first idea was always the right one.
+
+Reviewers read commit histories the way editors read drafts: not looking for perfection, but looking for evidence of a thinking process. A history that shows you pushed on the edges, recognized a wrong turn, articulated what you learned, and resolved on a better path is a far richer signal of engineering judgment than one that was reverse-engineered after the fact to look tidy. Let the repository tell the honest story of how the work got done.
+
+Submitting an Exercise
+You may share a completed exercise with the Lockbox AI team via either a public or private repository — the choice is yours. Each starter repository includes scripts that support both workflows.
+
+If you opt for a private repository, please add jpfulton-lockboxai as a contributor so the team can pull a local clone of your submission. Once you receive a confirmation email from join@lockboxai.com confirming the clone was successful, you are welcome to revoke access at that time.
+
+When you are ready to submit, send an email to join@lockboxai.com with the following: a link to your repository, the exercise ID as specified in the exercise document, and any additional context you would like to provide.
+
+Asynchronous Exercises
+1 exercise
+Exercise 1: Browser Automation and Resilient Data Extraction
+
+Build resilient Playwright automation against a healthcare reporting system.
+
+Available
+Philosophical Background and Evidential Support
+The asynchronous, artifact-based evaluation model used by Lockbox AI is not a novel experiment — it is a direct application of conclusions drawn from decades of peer-reviewed research published in the most respected journals in psychology, behavioral economics, and organizational science. This body of evidence, which spans more than eighty-five years of accumulated data and includes work by Nobel laureates, demonstrates that traditional unstructured interviews are not merely ineffective but can actively degrade hiring decisions to outcomes worse than random selection from a qualified pool.
+
+We believe transparency in this regard matters. Applicants deserve to understand not just what we ask of them, but why we ask it this way — and to see the evidence that supports the approach.

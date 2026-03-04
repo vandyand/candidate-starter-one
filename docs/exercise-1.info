@@ -1,0 +1,106 @@
+Exercise 1: Browser Automation and Resilient Data Extraction
+EX-001-RPA
+Build a Playwright-based automation solution that authenticates against a target healthcare reporting system, navigates its interface, extracts report data under various filter configurations, and writes structured output to local folders. The primary objective is not the data itself — it is to demonstrate a range of resilience and engineering techniques that make browser automation production-worthy.
+
+The problem domain of building flexible automation solutions on top of browser interaction is more complex than it appears at first glance. Clean element IDs, stable CSS paths, and reliable DOM hierarchies rarely exist in real-world target systems. This exercise asks you to confront that reality directly and demonstrate multiple techniques for making your automation resilient in the face of it.
+
+The Target System
+The target application is a healthcare reporting system built with Angular 21 and PrimeNG. It is a static, client-side application populated with synthetic data and designed exclusively for automation exercises. It contains no real patient information.
+
+The system exposes six report types, each with sortable and paginated data tables, configurable date range filters, dropdown filters, and export functionality:
+
+Claim Status — claims by payer, status, date of service, billed and paid amounts
+Encounters — patient encounters with diagnosis codes, procedure codes, and facility
+Current AR (Accounts Receivable) — aging buckets by payer and patient
+Remittance / Payments — EOB and ERA payment summaries
+Denials — denied claims requiring follow-up, with denial codes and action items
+Prior Authorizations — authorization status for procedures, with effective date ranges
+Target System URL
+
+The target system is deployed and available at the following address. Point your Playwright automation against this URL.
+
+https://automation-target-one.engineering.lockboxai.com
+Credentials
+
+The system uses hard-coded credentials. Either account will work for this exercise.
+
+Role	Username	Password
+admin	admin	nxqz7bkm2wvj4rt9yphe6csa5ufd1lg3
+user	user	k8pzmx3jvn5rqdy2wta6hfbu4eci1gs9
+Starter Repository
+Fork the starter repository below to begin your work. The starter provides a minimal project scaffold. All submissions are provided under the MIT License as described in the portal’s Licensing Model.
+
+https://github.com/Lockbox-AI/candidate-starter-one
+Core Requirements
+Every submission must satisfy the following. These are the minimum expectations — not the ceiling. The techniques and exploration areas that follow are where you distinguish yourself.
+
+1
+Authenticate against the target system using Playwright.
+2
+Navigate to the reports section and extract data from at least two distinct report types.
+3
+Apply at least one filter configuration (date range, dropdown, or both) before extraction.
+4
+Save extracted data to a structured local folder hierarchy (e.g., output/{report-type}/{date-range}/).
+5
+Write JSON metadata sidecar files alongside each output describing the extraction configuration: filters applied, timestamp, row count, report type, and any other context you find useful.
+6
+Demonstrate at least two distinct selector resilience strategies from the Techniques of Interest section below.
+7
+Include meaningful test coverage or validation that confirms the extracted data is correct and the automation behaves as expected.
+Techniques of Interest — Selector Resilience
+This is the central technical theme of the exercise. In production RPA, selector brittleness is the dominant source of maintenance burden. Target applications change without notice — DOM structures shift, class names are renamed, elements are re-ordered, and the clean identifiers you relied on yesterday disappear overnight. The techniques below form a tiered resilience model, each tier trading off cost and latency for broader adaptability. Demonstrating depth in any of these areas is significantly more interesting to reviewers than breadth alone.
+
+Tier 1 — User-Facing Locators
+
+Role-based selectors (getByRole), text-based (getByText), label-based (getByLabel), and test-ID (getByTestId). These mirror user perception rather than implementation detail and remain stable across DOM refactors. The accessibility tree is a powerful navigation model here — it is more stable than the DOM, maps directly to user-facing locator APIs, and is dramatically smaller (often a 90%+ reduction in representation size).
+
+Tier 2 — Anchor-Based Recovery
+
+Identify stable “anchor” elements — headings, navigation landmarks, logos, section labels — and locate targets by their spatial or structural relationship to those anchors (above, below, near, parent, sibling). This strategy survives layout refactors better than absolute paths because the semantic relationships between elements tend to persist even when their positions in the DOM tree change.
+
+Tier 3 — Algorithmic Fuzzy Matching
+
+When user-facing and anchor-based approaches cannot resolve a target, algorithmic techniques can search the DOM for the best-matching element. Build feature vectors per element (tag name, class list, attributes, position, visible text) and score candidates using string similarity algorithms — trigram similarity, Levenshtein distance, Jaro-Winkler distance, or weighted combinations. Implement a locator ensemble: store multiple locator hypotheses at authoring time, fall through them in priority order on failure, and track historical success rates to re-rank over time. Apply a confidence threshold — proceed automatically above it, flag for review below.
+
+Tier 4 — Machine Vision and OCR
+
+The last-resort tier. Capture a screenshot and use OCR (e.g., Tesseract) to locate text on the rendered page, or use template matching to find icons and buttons by their visual appearance. This tier carries the highest latency (1–5 seconds per interaction) and lowest reliability, but demonstrates an understanding of the full resilience spectrum. The interesting engineering here is knowing when and why to invoke it — and ensuring the system degrades gracefully into this tier only after higher-confidence approaches have been exhausted.
+
+Selector Fallback Cascades
+
+The tiers above form a natural cascade: try Tier 1 first, degrade to Tier 2 on failure, then Tier 3, then Tier 4. An exceptionally strong submission would implement this as an explicit framework — logging which tier resolved each interaction, measuring degradation patterns, and applying confidence scoring to determine whether the system should proceed automatically or escalate for human review.
+
+Additional Areas for Exploration
+The following are optional directions where you can demonstrate depth, creativity, and genuine expertise. None are required. Pursuing any one of them well is more valuable than touching all of them superficially. Choose the areas where you can show real insight and let the work speak for itself.
+
+Self-Healing Architecture — Locator ensembles with historical success tracking. Confidence scoring models that weigh locator specificity, historical stability, match count, and positional consistency. Automatic repair with degradation logging. The interesting question is calibration: what confidence threshold balances false-positive repairs against unnecessary human escalation?
+Observability and Tracing — Structured artifact bundles: JSON execution metadata alongside screenshots, Playwright traces, and human-readable Markdown reports. Custom Playwright reporters. OpenTelemetry instrumentation of individual automation steps with per-step duration, status, and locator resolution tier. Execution timelines that make debugging straightforward.
+Data Pipeline Quality — Remove specified columns from exported reports before writing output. Deduplicate rows across overlapping extraction periods. Validate row counts and data integrity. Cross-reference data between report types — for example, verify that claim IDs appearing in the Denials report also exist in Claim Status.
+Multi-Period Extraction — Extract the same report across different, intentionally overlapping date ranges. Save each period as a separate file. Reconcile or deduplicate the overlap to produce a clean, unified dataset. Record the period boundaries and overlap handling in the metadata sidecars.
+Configuration-Driven Workflows — Declarative workflow definitions (JSON, YAML, or your own DSL) describing which reports to extract, with what filters, in what output structure. Parameterized and reusable automation that can be reconfigured without modifying code.
+Execution Optimization — Storage state caching to persist authentication across runs and skip the login flow on subsequent executions. Browser context reuse versus fresh contexts — and the trade-offs of each. Parallel report extraction across multiple browser contexts or pages.
+Retry and Error Handling — Category-aware retry strategies that distinguish transient failures (network timeouts, rate limits) from deterministic ones (element not found, auth failure). Exponential backoff with jitter. Circuit breaker patterns for repeated failures on the same step.
+Change Detection and Drift Monitoring — Capture DOM structural snapshots between automation runs and compare them to detect drift. Visual regression comparison with configurable thresholds (tight on interaction targets, loose on page chrome). Alert when the target system’s UI changes beyond a tolerance band.
+Accessibility-First Automation — Use the accessibility tree as the primary navigation model rather than the DOM. Demonstrate how accessibility snapshots reduce dependence on implementation-level structure and produce a dramatically smaller, more stable page representation. Show how this maps directly to Playwright’s user-facing locator APIs.
+Trace Analysis and Locator Intelligence — Analyze Playwright trace files programmatically to extract locator health metrics. Identify patterns correlated with selector brittleness. Use trace data to rank locator alternatives or suggest improvements automatically.
+Human-in-the-Loop Escalation — Confidence-based decision points that pause execution for human input when the system falls below its self-repair threshold. Degradation reporting with screenshots and context so a reviewer can quickly understand what went wrong and approve or override the proposed action.
+Deliverables
+Your submission is the repository itself. Reviewers will clone it, read the commit history, run the automation, and evaluate the full body of work.
+
+A forked repository with a clean, meaningful commit history that tells the honest story of how the work was done
+A working Playwright automation suite that can be run against the target system
+Structured output folder with extracted data files and JSON metadata sidecars
+A README documenting your approach, the techniques you demonstrated, how to run the solution, and the architectural decisions you made along the way
+As noted on the portal home page, you are actively encouraged to include the artifacts of your AI-assisted workflow: CLAUDE.md, .cursor/rules/, planning documents, MCP configurations, and any other tooling artifacts that tell the story of how you worked.
+
+What Reviewers Look For
+Evaluation reflects the philosophy described on the portal home page. Reviewers are not grading against a rubric of checkboxes. They are reading your repository the way an editor reads a manuscript — looking for evidence of a thinking process, engineering taste, and the ability to navigate a genuinely complex problem space.
+
+Resilience depth — how many tiers of the selector resilience model you explored, and how well you understood the trade-offs at each level
+Code organization and clarity — clean structure, meaningful abstractions, engineering discipline
+Commit history — evidence of experimentation, decision-making, and honest exploration — including the paths that didn’t work out
+Documentation quality — clear explanations of trade-offs, design decisions, and the reasoning behind your choices
+Problem-space understanding — whether you grasped why browser automation resilience is hard and what makes production RPA fundamentally different from scripted UI testing
+Submitting This Exercise
+When you are ready to submit, send an email to join@lockboxai.com with a link to your repository and the exercise ID EX-001-RPA. Refer to the Submitting an Exercise section on the portal home page for details on public and private repository options.

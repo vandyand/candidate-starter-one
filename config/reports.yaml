@@ -1,0 +1,105 @@
+target:
+  url: https://automation-target-one.engineering.lockboxai.com
+  credentials:
+    username: admin
+    password: nxqz7bkm2wvj4rt9yphe6csa5ufd1lg3
+
+reports:
+  - name: Claim Status
+    slug: claim-status
+    path: /reports/claims
+    filters:
+      - type: dateRange
+        from: "2024-08-01"
+        to: "2025-08-01"
+      - type: dropdown
+        label: Status
+        value: Denied
+    columns:
+      exclude: []
+    validation:
+      minRows: 1
+
+  - name: Denials
+    slug: denials
+    path: /reports/denials
+    filters:
+      - type: dateRange
+        from: "2024-08-01"
+        to: "2025-08-01"
+      - type: dropdown
+        label: Payer
+        value: Aetna
+    columns:
+      exclude: []
+    validation:
+      minRows: 1
+      crossRef:
+        target: claim-status
+        key: Claim ID
+
+  - name: Encounters
+    slug: encounters
+    path: /reports/encounters
+    filters:
+      - type: dateRange
+        from: "2024-08-01"
+        to: "2025-08-01"
+    columns:
+      exclude: []
+    validation:
+      minRows: 1
+
+  - name: Current AR
+    slug: current-ar
+    path: /reports/ar
+    filters:
+      - type: dateRange
+        from: "2024-08-01"
+        to: "2025-08-01"
+    columns:
+      exclude: []
+    validation:
+      minRows: 1
+
+  - name: Remittance / Payments
+    slug: remittance-payments
+    path: /reports/remittance
+    filters:
+      - type: dateRange
+        from: "2024-08-01"
+        to: "2025-08-01"
+      - type: dropdown
+        label: Payer
+        value: Medicare
+    columns:
+      exclude: []
+    validation:
+      minRows: 1
+
+  - name: Prior Authorizations
+    slug: prior-authorizations
+    path: /reports/prior-auths
+    filters:
+      - type: dateRange
+        from: "2024-08-01"
+        to: "2025-08-01"
+      - type: dropdown
+        label: Status
+        value: Denied
+    columns:
+      exclude: []
+    validation:
+      minRows: 1
+
+periods:
+  - from: "2024-08-01"
+    to: "2025-02-01"
+  - from: "2025-01-01"
+    to: "2025-08-01"
+
+settings:
+  confidenceThreshold: 0.7
+  screenshotOnDegradation: true
+  maxRetries: 3
+  downloadTimeoutMs: 30000

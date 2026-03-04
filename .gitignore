@@ -15,8 +15,18 @@ node_modules/
 playwright-report/
 test-results/
 
+# Environment
+.env
+
+# Output
+output/
+downloads/
+
 # IDE
 .DS_Store
 .idea/
 .vscode/
 *.swp
+
+# ESLint
+!eslint.config.mjs
