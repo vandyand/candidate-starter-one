@@ -20,6 +20,7 @@
         "start": "node dist/index.js",
         "dev": "tsx src/index.ts",
         "test": "jest",
+        "test:integration": "RUN_INTEGRATION=true jest --testPathPattern=integration --testTimeout=120000",
         "lint": "eslint .",
         "lint:fix": "eslint . --fix",
         "format": "prettier --write .",
