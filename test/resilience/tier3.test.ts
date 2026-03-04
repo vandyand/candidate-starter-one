@@ -22,7 +22,11 @@ import type { Page, Locator } from 'playwright';
 import type { LocatorSpec } from '../../src/types/index';
 import { resolveTier3 } from '../../src/resilience/tier3';
 
-function createMockElement(tag: string, text: string, attrs: Record<string, string> = {}): {
+function createMockElement(
+    tag: string,
+    text: string,
+    attrs: Record<string, string> = {},
+): {
     evaluate: jest.Mock;
     getAttribute: jest.Mock;
 } {

@@ -25,10 +25,7 @@ import { loadConfig } from '../config/loader.js';
 import { ResilientLocator } from '../resilience/index.js';
 import { login } from '../steps/login.js';
 import { extractReport } from './report-extractor.js';
-import {
-    deduplicateRows,
-    crossReferenceValidation,
-} from '../pipeline/validate.js';
+import { deduplicateRows, crossReferenceValidation } from '../pipeline/validate.js';
 import type { FilterConfig } from '../types/index.js';
 import { createLogger } from '../utils/logger.js';
 
@@ -37,8 +34,8 @@ const logger = createLogger('Orchestrator');
 /** Map report slugs to their primary key column for deduplication. */
 const PRIMARY_KEY_MAP: Record<string, string> = {
     'claim-status': 'Claim ID',
-    'denials': 'Claim ID',
-    'encounters': 'Encounter ID',
+    denials: 'Claim ID',
+    encounters: 'Encounter ID',
     'current-ar': 'Patient',
     'remittance-payments': 'Check / EFT #',
     'prior-authorizations': 'Auth #',
@@ -122,11 +119,7 @@ export async function run(): Promise<void> {
         await context.tracing.start({ screenshots: true, snapshots: true });
 
         const page = await context.newPage();
-        const locator = new ResilientLocator(
-            page,
-            outputDir,
-            config.settings.confidenceThreshold,
-        );
+        const locator = new ResilientLocator(page, outputDir, config.settings.confidenceThreshold);
 
         // Step 5: Login
         const { url: baseUrl, credentials } = config.target;
@@ -142,7 +135,7 @@ export async function run(): Promise<void> {
 
             for (const period of config.periods) {
                 // Build override filters: replace dateRange filter with this period
-                const overrideFilters: FilterConfig[] = report.filters.map((f) => {
+                const overrideFilters: FilterConfig[] = report.filters.map(f => {
                     if (f.type === 'dateRange') {
                         return { type: 'dateRange' as const, from: period.from, to: period.to };
                     }
@@ -150,7 +143,7 @@ export async function run(): Promise<void> {
                 });
 
                 // If there was no dateRange filter, add one from the period
-                const hasDateRange = report.filters.some((f) => f.type === 'dateRange');
+                const hasDateRange = report.filters.some(f => f.type === 'dateRange');
                 if (!hasDateRange) {
                     overrideFilters.unshift({
                         type: 'dateRange',
@@ -173,7 +166,8 @@ export async function run(): Promise<void> {
             }
 
             // Deduplicate across periods by primary key
-            const primaryKey = PRIMARY_KEY_MAP[report.slug] ?? Object.keys(allRows[0] ?? {})[0] ?? 'id';
+            const primaryKey =
+                PRIMARY_KEY_MAP[report.slug] ?? Object.keys(allRows[0] ?? {})[0] ?? 'id';
             const { rows: dedupedRows, removed } = deduplicateRows(allRows, primaryKey);
 
             if (removed > 0) {

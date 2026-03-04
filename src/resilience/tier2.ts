@@ -33,10 +33,9 @@ const logger = createLogger('Tier2');
 function buildTargetLocator(page: Page, target: NonNullable<Tier2Spec['target']>): Locator {
     if (target.role !== undefined) {
         if (target.text !== undefined) {
-            return page.getByRole(
-                target.role as Parameters<Page['getByRole']>[0],
-                { name: target.text },
-            );
+            return page.getByRole(target.role as Parameters<Page['getByRole']>[0], {
+                name: target.text,
+            });
         }
         return page.getByRole(target.role as Parameters<Page['getByRole']>[0]);
     }
@@ -82,9 +81,9 @@ function resolveRelative(
                 anchorElement,
             );
         case 'rightOf':
-            return (
-                targetLocator as unknown as { rightOf: (anchor: Locator) => Locator }
-            ).rightOf(anchorElement);
+            return (targetLocator as unknown as { rightOf: (anchor: Locator) => Locator }).rightOf(
+                anchorElement,
+            );
         case 'within':
             if (target.role !== undefined) {
                 if (target.text !== undefined) {
@@ -93,9 +92,7 @@ function resolveRelative(
                         { name: target.text },
                     );
                 }
-                return anchorElement.getByRole(
-                    target.role as Parameters<Locator['getByRole']>[0],
-                );
+                return anchorElement.getByRole(target.role as Parameters<Locator['getByRole']>[0]);
             }
             if (target.text !== undefined) {
                 return anchorElement.getByText(target.text);
@@ -112,10 +109,7 @@ function resolveRelative(
     }
 }
 
-export async function resolveTier2(
-    page: Page,
-    spec: LocatorSpec,
-): Promise<LocatorResult | null> {
+export async function resolveTier2(page: Page, spec: LocatorSpec): Promise<LocatorResult | null> {
     if (spec.tier2 === undefined) {
         return null;
     }
@@ -142,9 +136,7 @@ export async function resolveTier2(
         const latencyMs = performance.now() - start;
 
         if (count === 0) {
-            logger.debug(
-                `No Tier 2 match for "${spec.description}" (${spec.tier2.relationship})`,
-            );
+            logger.debug(`No Tier 2 match for "${spec.description}" (${spec.tier2.relationship})`);
             return null;
         }
 

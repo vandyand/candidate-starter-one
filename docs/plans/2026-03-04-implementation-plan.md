@@ -39,14 +39,14 @@
 
 ## Report Reference
 
-| Report | URL Path | Dropdown Filters | Columns |
-|--------|----------|-----------------|---------|
-| Claim Status | /reports/claims | Status ("All Statuses"), Payer ("All Payers") | Claim ID, Patient, Payer, Date of Service, Billed, Status, Paid, Denial Reason |
-| Encounters | /reports/encounters | Encounter Type ("All Types"), Diagnosis ICD-10 ("All Codes") | Encounter ID, Patient, Provider, Date, Facility, ICD-10, CPT, Type |
-| Current AR | /reports/ar | Payer ("All Payers") | Patient, Payer, Original Charge, 0-30 Days, 31-60 Days, 61-90 Days, 91-120 Days, 120+ Days, Last Activity |
-| Remittance/Payments | /reports/remittance | Payer ("All Payers") | Payment Date, Payer, Check/EFT #, Total Payment, Adjustments, Net |
-| Denials | /reports/denials | Denial Code ("All Codes"), Payer ("All Payers") | Claim ID, Denial Code, Reason, Payer, Billed, Denial Date, Action Required |
-| Prior Auths | /reports/prior-auths | Status ("All Statuses"), Payer ("All Payers") | Auth #, Patient, Procedure, Payer, Status, Effective Start, Effective End |
+| Report              | URL Path             | Dropdown Filters                                             | Columns                                                                                                   |
+| ------------------- | -------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| Claim Status        | /reports/claims      | Status ("All Statuses"), Payer ("All Payers")                | Claim ID, Patient, Payer, Date of Service, Billed, Status, Paid, Denial Reason                            |
+| Encounters          | /reports/encounters  | Encounter Type ("All Types"), Diagnosis ICD-10 ("All Codes") | Encounter ID, Patient, Provider, Date, Facility, ICD-10, CPT, Type                                        |
+| Current AR          | /reports/ar          | Payer ("All Payers")                                         | Patient, Payer, Original Charge, 0-30 Days, 31-60 Days, 61-90 Days, 91-120 Days, 120+ Days, Last Activity |
+| Remittance/Payments | /reports/remittance  | Payer ("All Payers")                                         | Payment Date, Payer, Check/EFT #, Total Payment, Adjustments, Net                                         |
+| Denials             | /reports/denials     | Denial Code ("All Codes"), Payer ("All Payers")              | Claim ID, Denial Code, Reason, Payer, Billed, Denial Date, Action Required                                |
+| Prior Auths         | /reports/prior-auths | Status ("All Statuses"), Payer ("All Payers")                | Auth #, Patient, Procedure, Payer, Status, Effective Start, Effective End                                 |
 
 All reports: From/To date pickers, 4000 rows, 25/page, sortable columns, Download XLSX button, Clear Filters button.
 
@@ -55,6 +55,7 @@ All reports: From/To date pickers, 4000 rows, 25/page, sortable columns, Downloa
 ## Task 1: Fork Starter & Project Setup
 
 **Files:**
+
 - Fork: `https://github.com/Lockbox-AI/candidate-starter-one`
 - Create: `.env`
 - Create: `config/reports.yaml`
@@ -100,115 +101,116 @@ LOG_LEVEL=info
 
 ```yaml
 target:
-  url: https://automation-target-one.engineering.lockboxai.com
-  credentials:
-    username: admin
-    password: nxqz7bkm2wvj4rt9yphe6csa5ufd1lg3
+    url: https://automation-target-one.engineering.lockboxai.com
+    credentials:
+        username: admin
+        password: nxqz7bkm2wvj4rt9yphe6csa5ufd1lg3
 
 reports:
-  - name: Claim Status
-    slug: claim-status
-    path: /reports/claims
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-08-01"
-      - type: dropdown
-        label: Status
-        value: Denied
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
+    - name: Claim Status
+      slug: claim-status
+      path: /reports/claims
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-08-01'
+          - type: dropdown
+            label: Status
+            value: Denied
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
 
-  - name: Denials
-    slug: denials
-    path: /reports/denials
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-08-01"
-      - type: dropdown
-        label: Payer
-        value: Aetna
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
-      crossRef:
-        target: claim-status
-        key: Claim ID
+    - name: Denials
+      slug: denials
+      path: /reports/denials
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-08-01'
+          - type: dropdown
+            label: Payer
+            value: Aetna
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
+          crossRef:
+              target: claim-status
+              key: Claim ID
 
-  - name: Encounters
-    slug: encounters
-    path: /reports/encounters
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-08-01"
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
+    - name: Encounters
+      slug: encounters
+      path: /reports/encounters
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-08-01'
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
 
-  - name: Current AR
-    slug: current-ar
-    path: /reports/ar
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-08-01"
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
+    - name: Current AR
+      slug: current-ar
+      path: /reports/ar
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-08-01'
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
 
-  - name: Remittance / Payments
-    slug: remittance-payments
-    path: /reports/remittance
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-08-01"
-      - type: dropdown
-        label: Payer
-        value: Medicare
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
+    - name: Remittance / Payments
+      slug: remittance-payments
+      path: /reports/remittance
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-08-01'
+          - type: dropdown
+            label: Payer
+            value: Medicare
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
 
-  - name: Prior Authorizations
-    slug: prior-authorizations
-    path: /reports/prior-auths
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-08-01"
-      - type: dropdown
-        label: Status
-        value: Denied
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
+    - name: Prior Authorizations
+      slug: prior-authorizations
+      path: /reports/prior-auths
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-08-01'
+          - type: dropdown
+            label: Status
+            value: Denied
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
 
 periods:
-  - from: "2024-08-01"
-    to: "2025-02-01"
-  - from: "2025-01-01"
-    to: "2025-08-01"
+    - from: '2024-08-01'
+      to: '2025-02-01'
+    - from: '2025-01-01'
+      to: '2025-08-01'
 
 settings:
-  confidenceThreshold: 0.7
-  screenshotOnDegradation: true
-  maxRetries: 3
-  downloadTimeoutMs: 30000
+    confidenceThreshold: 0.7
+    screenshotOnDegradation: true
+    maxRetries: 3
+    downloadTimeoutMs: 30000
 ```
 
 **Step 6: Update .gitignore**
 
 Add to existing `.gitignore`:
+
 ```
 .env
 output/
@@ -234,6 +236,7 @@ Add .env for credentials and runtime settings."
 ## Task 2: Logger & Core Types
 
 **Files:**
+
 - Create: `src/utils/logger.ts`
 - Create: `src/types/index.ts`
 - Create: `test/utils/logger.test.ts`
@@ -519,6 +522,7 @@ extraction metadata, and observability trace events."
 ## Task 3: Resilient Locator Engine — Tier 1
 
 **Files:**
+
 - Create: `src/resilience/resilient-locator.ts`
 - Create: `src/resilience/tier1.ts`
 - Create: `src/resilience/tracer.ts`
@@ -532,7 +536,11 @@ extraction metadata, and observability trace events."
 import { resolveTier1 } from '../../src/resilience/tier1.js';
 
 // Mock Playwright Page
-function createMockPage(options: { roleMatch?: boolean; textMatch?: boolean; labelMatch?: boolean }) {
+function createMockPage(options: {
+    roleMatch?: boolean;
+    textMatch?: boolean;
+    labelMatch?: boolean;
+}) {
     const mockLocator = {
         count: jest.fn().mockResolvedValue(options.roleMatch ? 1 : 0),
         first: jest.fn().mockReturnThis(),
@@ -633,10 +641,7 @@ async function tryLocator(
     return null;
 }
 
-export async function resolveTier1(
-    page: Page,
-    spec: LocatorSpec,
-): Promise<LocatorResult | null> {
+export async function resolveTier1(page: Page, spec: LocatorSpec): Promise<LocatorResult | null> {
     if (!spec.tier1) return null;
 
     const start = Date.now();
@@ -827,8 +832,8 @@ describe('ExecutionTracer', () => {
 
     it('should track locator health across resolutions', () => {
         tracer.recordLocatorResolution('Sign In button', 1, 0.95, true);
-        tracer.recordLocatorResolution('Sign In button', 1, 0.90, true);
-        tracer.recordLocatorResolution('Sign In button', 2, 0.80, true);
+        tracer.recordLocatorResolution('Sign In button', 1, 0.9, true);
+        tracer.recordLocatorResolution('Sign In button', 2, 0.8, true);
         tracer.flush();
 
         const health = tracer.getHealth();
@@ -860,6 +865,7 @@ metrics (success rates by tier, confidence averages) across runs."
 ## Task 4: Resilient Locator Engine — Tier 2 (Anchor-Based)
 
 **Files:**
+
 - Create: `src/resilience/tier2.ts`
 - Create: `test/resilience/tier2.test.ts`
 
@@ -933,10 +939,7 @@ import { createLogger } from '../utils/logger.js';
 
 const logger = createLogger('tier2');
 
-export async function resolveTier2(
-    page: Page,
-    spec: LocatorSpec,
-): Promise<LocatorResult | null> {
+export async function resolveTier2(page: Page, spec: LocatorSpec): Promise<LocatorResult | null> {
     if (!spec.tier2) return null;
 
     const start = Date.now();
@@ -957,9 +960,7 @@ export async function resolveTier2(
             case 'near':
                 // Use Playwright's locator relative to anchor with :near pseudo
                 if (target?.role) {
-                    targetLocator = page
-                        .getByRole(target.role as any)
-                        .near(anchorEl);
+                    targetLocator = page.getByRole(target.role as any).near(anchorEl);
                 } else if (target?.text) {
                     targetLocator = page.getByText(target.text).near(anchorEl);
                 }
@@ -967,9 +968,7 @@ export async function resolveTier2(
 
             case 'below':
                 if (target?.role) {
-                    targetLocator = page
-                        .getByRole(target.role as any)
-                        .below(anchorEl);
+                    targetLocator = page.getByRole(target.role as any).below(anchorEl);
                 } else if (target?.text) {
                     targetLocator = page.getByText(target.text).below(anchorEl);
                 }
@@ -977,9 +976,7 @@ export async function resolveTier2(
 
             case 'above':
                 if (target?.role) {
-                    targetLocator = page
-                        .getByRole(target.role as any)
-                        .above(anchorEl);
+                    targetLocator = page.getByRole(target.role as any).above(anchorEl);
                 } else if (target?.text) {
                     targetLocator = page.getByText(target.text).above(anchorEl);
                 }
@@ -1049,6 +1046,7 @@ refactors where DOM positions change but semantic relationships persist."
 ## Task 5: Resilient Locator Engine — Tier 3 (Fuzzy Matching)
 
 **Files:**
+
 - Create: `src/resilience/tier3.ts`
 - Create: `src/resilience/fuzzy.ts`
 - Create: `test/resilience/tier3.test.ts`
@@ -1324,6 +1322,7 @@ resolution vs. human escalation."
 ## Task 6: Resilient Locator Engine — Tier 4 (GLM-OCR Vision)
 
 **Files:**
+
 - Create: `src/resilience/tier4.ts`
 - Create: `src/resilience/ocr-client.ts`
 - Create: `test/resilience/tier4.test.ts`
@@ -1468,10 +1467,7 @@ import { createLogger } from '../utils/logger.js';
 
 const logger = createLogger('tier4');
 
-export async function resolveTier4(
-    page: Page,
-    spec: LocatorSpec,
-): Promise<LocatorResult | null> {
+export async function resolveTier4(page: Page, spec: LocatorSpec): Promise<LocatorResult | null> {
     if (!spec.tier4) return null;
 
     const start = Date.now();
@@ -1547,6 +1543,7 @@ Gracefully degrades when no OCR endpoint is configured."
 ## Task 7: Resilient Locator — Cascade Orchestrator
 
 **Files:**
+
 - Create: `src/resilience/index.ts`
 - Create: `test/resilience/cascade.test.ts`
 
@@ -1743,12 +1740,7 @@ export class ResilientLocator {
             details: { description: spec.description },
         });
 
-        this.tracer.recordLocatorResolution(
-            spec.description,
-            result.tier,
-            result.confidence,
-            true,
-        );
+        this.tracer.recordLocatorResolution(spec.description, result.tier, result.confidence, true);
 
         if (result.tier > 1) {
             logger.warn(
@@ -1798,6 +1790,7 @@ records degradation events. Self-healing data persisted via tracer."
 ## Task 8: Step Functions — Login & Navigation
 
 **Files:**
+
 - Create: `src/steps/login.ts`
 - Create: `src/steps/navigate.ts`
 - Create: `src/steps/locator-specs.ts`
@@ -1973,10 +1966,7 @@ import { createLogger } from '../utils/logger.js';
 
 const logger = createLogger('navigate');
 
-export async function navigateToReports(
-    page: Page,
-    locator: ResilientLocator,
-): Promise<void> {
+export async function navigateToReports(page: Page, locator: ResilientLocator): Promise<void> {
     const tabResult = await locator.resolve(navSpecs.reportsTab);
     if (!tabResult) throw new Error('Could not find Reports tab');
     await tabResult.element.click();
@@ -1997,7 +1987,10 @@ export async function navigateToReport(
     await page.waitForLoadState('networkidle');
 
     // Verify we're on the right page by checking for the report heading
-    const heading = await page.getByRole('heading', { name: reportName }).isVisible().catch(() => false);
+    const heading = await page
+        .getByRole('heading', { name: reportName })
+        .isVisible()
+        .catch(() => false);
     if (!heading) {
         // Fallback: try navigating via Reports page
         await navigateToReports(page, locator);
@@ -2076,6 +2069,7 @@ Locator specs define all 4 tiers for every UI element."
 ## Task 9: Step Functions — Filters & Download
 
 **Files:**
+
 - Create: `src/steps/filter.ts`
 - Create: `src/steps/download.ts`
 - Create: `test/steps/filter.test.ts`
@@ -2132,8 +2126,8 @@ async function applyDropdown(
 ): Promise<void> {
     // Determine the placeholder text based on common patterns
     const placeholders: Record<string, string> = {
-        'Status': 'All Statuses',
-        'Payer': 'All Payers',
+        Status: 'All Statuses',
+        Payer: 'All Payers',
         'Denial Code': 'All Codes',
         'Encounter Type': 'All Types',
         'Diagnosis (ICD-10)': 'All Codes',
@@ -2290,6 +2284,7 @@ timeout. Both use ResilientLocator for all element interactions."
 ## Task 10: Data Pipeline — XLSX Parsing & Output
 
 **Files:**
+
 - Create: `src/pipeline/parse-xlsx.ts`
 - Create: `src/pipeline/output.ts`
 - Create: `src/pipeline/validate.ts`
@@ -2479,7 +2474,9 @@ export function crossReferenceValidation(
         );
     }
 
-    logger.info(`Cross-reference: ${sourceRows.length} source rows, ${missingCount} missing in target`);
+    logger.info(
+        `Cross-reference: ${sourceRows.length} source rows, ${missingCount} missing in target`,
+    );
     return { valid: true, errors, warnings };
 }
 
@@ -2545,7 +2542,11 @@ export function writeOutput(
 
 ```typescript
 // test/pipeline/validate.test.ts
-import { validateRowCount, crossReferenceValidation, deduplicateRows } from '../../src/pipeline/validate.js';
+import {
+    validateRowCount,
+    crossReferenceValidation,
+    deduplicateRows,
+} from '../../src/pipeline/validate.js';
 
 describe('Data Pipeline Validation', () => {
     it('should validate minimum row count', () => {
@@ -2599,6 +2600,7 @@ data.json + metadata.json sidecar to structured folder hierarchy."
 ## Task 11: Config Loader
 
 **Files:**
+
 - Create: `src/config/loader.ts`
 - Create: `test/config/loader.test.ts`
 
@@ -2640,7 +2642,9 @@ export function loadConfig(configPath?: string): WorkflowConfig {
         config.settings.confidenceThreshold = parseFloat(process.env.CONFIDENCE_THRESHOLD);
     }
 
-    logger.info(`Loaded config with ${config.reports.length} reports, ${config.periods.length} periods`);
+    logger.info(
+        `Loaded config with ${config.reports.length} reports, ${config.periods.length} periods`,
+    );
     return config;
 }
 ```
@@ -2693,6 +2697,7 @@ credentials and runtime settings. Validates report definitions."
 ## Task 12: Orchestrator — Main Entry Point
 
 **Files:**
+
 - Modify: `src/index.ts`
 - Modify: `src/automation/example.ts` → rename to `src/automation/orchestrator.ts`
 - Create: `src/automation/report-extractor.ts`
@@ -2827,11 +2832,7 @@ export async function run(): Promise<void> {
     try {
         const context = await browser.newContext({ acceptDownloads: true });
         const page = await context.newPage();
-        const locator = new ResilientLocator(
-            page,
-            outputDir,
-            config.settings.confidenceThreshold,
-        );
+        const locator = new ResilientLocator(page, outputDir, config.settings.confidenceThreshold);
 
         // Step 1: Login
         await login(
@@ -2851,7 +2852,11 @@ export async function run(): Promise<void> {
             for (const period of config.periods) {
                 const overrideFilters: FilterConfig[] = report.filters.map(f => {
                     if (f.type === 'dateRange') {
-                        return { type: 'dateRange', from: period.from, to: period.to } as DateRangeFilter;
+                        return {
+                            type: 'dateRange',
+                            from: period.from,
+                            to: period.to,
+                        } as DateRangeFilter;
                     }
                     return f;
                 });
@@ -2869,10 +2874,16 @@ export async function run(): Promise<void> {
             }
 
             // Deduplicate across periods
-            const primaryKey = report.slug === 'current-ar' ? 'Patient' :
-                              report.slug === 'remittance-payments' ? 'Check / EFT #' :
-                              report.slug === 'prior-authorizations' ? 'Auth #' :
-                              report.slug === 'encounters' ? 'Encounter ID' : 'Claim ID';
+            const primaryKey =
+                report.slug === 'current-ar'
+                    ? 'Patient'
+                    : report.slug === 'remittance-payments'
+                      ? 'Check / EFT #'
+                      : report.slug === 'prior-authorizations'
+                        ? 'Auth #'
+                        : report.slug === 'encounters'
+                          ? 'Encounter ID'
+                          : 'Claim ID';
 
             const { rows: dedupedRows, removed } = deduplicateRows(allRows, primaryKey);
             extractedData[report.slug] = dedupedRows;
@@ -2993,6 +3004,7 @@ generates a Markdown run summary with locator resolution statistics."
 ## Task 13: Integration Test — End-to-End
 
 **Files:**
+
 - Create: `test/integration/e2e.test.ts`
 
 **Step 1: Write E2E integration test**
@@ -3088,6 +3100,7 @@ describeIntegration('E2E Integration', () => {
 **Step 2: Add integration test script to package.json**
 
 Add to `scripts` in package.json:
+
 ```json
 "test:integration": "RUN_INTEGRATION=true jest --testPathPattern=integration --testTimeout=120000"
 ```
@@ -3114,18 +3127,21 @@ via RUN_INTEGRATION=true."
 ## Task 14: Observability — Markdown Report & Playwright Traces
 
 **Files:**
+
 - Modify: `src/automation/orchestrator.ts` (add Playwright trace support)
 - Enhance the `generateRunSummary` function
 
 **Step 1: Add Playwright trace recording to orchestrator**
 
 In the orchestrator's `run()` function, after creating the context:
+
 ```typescript
 // Start tracing
 await context.tracing.start({ screenshots: true, snapshots: true, sources: true });
 ```
 
 Before closing browser:
+
 ```typescript
 // Save trace
 const tracePath = path.join(outputDir, 'traces', `playwright-trace-${Date.now()}.zip`);
@@ -3158,17 +3174,20 @@ filter details, and tier degradation warnings."
 ## Task 15: GLM-OCR Deployment & Integration
 
 **Files:**
+
 - Create: `scripts/deploy-ocr.sh` (or documentation)
 - Modify: `src/resilience/ocr-client.ts` (adapt to actual GLM-OCR API format)
 
 **Step 1: Set up GLM-OCR on HuggingFace**
 
 This step requires manual setup:
+
 1. Create a HuggingFace Inference Endpoint for `zai-org/GLM-OCR`
 2. Note the endpoint URL
 3. Add it to `.env` as `GLM_OCR_ENDPOINT`
 
 Create a deployment guide:
+
 ```bash
 # scripts/deploy-ocr.sh - Documentation script
 echo "GLM-OCR Deployment Guide"
@@ -3199,6 +3218,7 @@ when no endpoint is configured. Included deployment documentation."
 ## Task 16: CLAUDE.md & Documentation
 
 **Files:**
+
 - Create: `CLAUDE.md`
 - Create: `README.md`
 
@@ -3209,6 +3229,7 @@ Document project conventions, architecture decisions, and how AI assistants shou
 **Step 2: Create README.md**
 
 Cover:
+
 - Project overview and purpose
 - Architecture diagram
 - Resilience tier descriptions
@@ -3260,6 +3281,7 @@ ls -R output/
 ```
 
 Confirm:
+
 - 6 report directories with data.json + metadata.json
 - traces/ with JSONL and Playwright trace
 - reports/ with run-summary.md

@@ -77,7 +77,9 @@ jest.mock('../../src/config/loader', () => ({
 }));
 
 const mockResolve = jest.fn().mockResolvedValue(null);
-const mockGetResolutionStats = jest.fn().mockReturnValue({ tier1: 0, tier2: 0, tier3: 0, tier4: 0, failed: 0 });
+const mockGetResolutionStats = jest
+    .fn()
+    .mockReturnValue({ tier1: 0, tier2: 0, tier3: 0, tier4: 0, failed: 0 });
 const mockFlush = jest.fn();
 
 jest.mock('../../src/resilience/index', () => ({
@@ -111,7 +113,9 @@ jest.mock('../../src/automation/report-extractor', () => ({
 }));
 
 jest.mock('../../src/pipeline/validate', () => ({
-    deduplicateRows: jest.fn().mockReturnValue({ rows: [{ 'Claim ID': '001', Amount: 100 }], removed: 0 }),
+    deduplicateRows: jest
+        .fn()
+        .mockReturnValue({ rows: [{ 'Claim ID': '001', Amount: 100 }], removed: 0 }),
     crossReferenceValidation: jest.fn().mockReturnValue({ valid: true, errors: [], warnings: [] }),
     validateRowCount: jest.fn().mockReturnValue({ valid: true, errors: [], warnings: [] }),
 }));
@@ -181,7 +185,11 @@ describe('Orchestrator – run()', () => {
             'https://example.com',
             expect.any(String),
             expect.arrayContaining([
-                expect.objectContaining({ type: 'dateRange', from: '2024-01-01', to: '2024-06-01' }),
+                expect.objectContaining({
+                    type: 'dateRange',
+                    from: '2024-01-01',
+                    to: '2024-06-01',
+                }),
             ]),
         );
     });

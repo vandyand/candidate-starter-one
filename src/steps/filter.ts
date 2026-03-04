@@ -92,7 +92,11 @@ async function applyDropdownFilter(
     filter: DropdownFilter,
 ): Promise<void> {
     const placeholder = PLACEHOLDER_MAP[filter.label] ?? `All ${filter.label}s`;
-    logger.info('Applying dropdown filter', { label: filter.label, value: filter.value, placeholder });
+    logger.info('Applying dropdown filter', {
+        label: filter.label,
+        value: filter.value,
+        placeholder,
+    });
 
     // Resolve and click the dropdown to open it
     const dropdownResult = await locator.resolve(dropdownFilterSpec(filter.label, placeholder));

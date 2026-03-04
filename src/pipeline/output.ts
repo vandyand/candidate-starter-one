@@ -38,15 +38,7 @@ export function writeOutput(
     const dir = path.join(outputDir, slug, periodLabel);
     fs.mkdirSync(dir, { recursive: true });
 
-    fs.writeFileSync(
-        path.join(dir, 'data.json'),
-        JSON.stringify(data, null, 2),
-        'utf-8',
-    );
+    fs.writeFileSync(path.join(dir, 'data.json'), JSON.stringify(data, null, 2), 'utf-8');
 
-    fs.writeFileSync(
-        path.join(dir, 'metadata.json'),
-        JSON.stringify(metadata, null, 2),
-        'utf-8',
-    );
+    fs.writeFileSync(path.join(dir, 'metadata.json'), JSON.stringify(metadata, null, 2), 'utf-8');
 }

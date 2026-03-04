@@ -41,9 +41,7 @@ const logger = createLogger('ReportExtractor');
  * and formatting as "YYYY-MM-DD_YYYY-MM-DD".
  */
 function buildPeriodLabel(filters: FilterConfig[]): string {
-    const dateFilter = filters.find(
-        (f): f is DateRangeFilter => f.type === 'dateRange',
-    );
+    const dateFilter = filters.find((f): f is DateRangeFilter => f.type === 'dateRange');
     if (dateFilter) {
         return `${dateFilter.from}_${dateFilter.to}`;
     }

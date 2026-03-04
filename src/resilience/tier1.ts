@@ -33,12 +33,16 @@ function buildStrategies(page: Page, tier1: Tier1Spec): Strategy[] {
     const strategies: Strategy[] = [];
 
     if (tier1.role !== undefined) {
-        const name = tier1.text !== undefined
-            ? `role(${tier1.role}, "${tier1.text}")`
-            : `role(${tier1.role})`;
-        const locator = tier1.text !== undefined
-            ? page.getByRole(tier1.role as Parameters<Page['getByRole']>[0], { name: tier1.text })
-            : page.getByRole(tier1.role as Parameters<Page['getByRole']>[0]);
+        const name =
+            tier1.text !== undefined
+                ? `role(${tier1.role}, "${tier1.text}")`
+                : `role(${tier1.role})`;
+        const locator =
+            tier1.text !== undefined
+                ? page.getByRole(tier1.role as Parameters<Page['getByRole']>[0], {
+                      name: tier1.text,
+                  })
+                : page.getByRole(tier1.role as Parameters<Page['getByRole']>[0]);
         strategies.push({ name, locator });
     }
 
@@ -66,10 +70,7 @@ function buildStrategies(page: Page, tier1: Tier1Spec): Strategy[] {
     return strategies;
 }
 
-export async function resolveTier1(
-    page: Page,
-    spec: LocatorSpec,
-): Promise<LocatorResult | null> {
+export async function resolveTier1(page: Page, spec: LocatorSpec): Promise<LocatorResult | null> {
     if (spec.tier1 === undefined) {
         return null;
     }

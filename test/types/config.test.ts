@@ -66,9 +66,7 @@ describe('config/reports.yaml', () => {
 
     it('every report has at least one dateRange filter', () => {
         for (const report of config.reports) {
-            const dateFilters = report.filters.filter(
-                (f: FilterConfig) => f.type === 'dateRange',
-            );
+            const dateFilters = report.filters.filter((f: FilterConfig) => f.type === 'dateRange');
             expect(dateFilters.length).toBeGreaterThanOrEqual(1);
         }
     });

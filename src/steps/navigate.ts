@@ -28,10 +28,7 @@ const logger = createLogger('NavigateStep');
 /**
  * Clicks the Reports tab in the toolbar and waits for the /reports URL.
  */
-export async function navigateToReports(
-    page: Page,
-    locator: ResilientLocator,
-): Promise<void> {
+export async function navigateToReports(page: Page, locator: ResilientLocator): Promise<void> {
     logger.info('Navigating to Reports page');
 
     const reportsTabResult = await locator.resolve(navSpecs.reportsTab);
@@ -40,7 +37,7 @@ export async function navigateToReports(
     }
     await reportsTabResult.element.click();
 
-    await page.waitForURL((url) => url.pathname.includes('/reports'), {
+    await page.waitForURL(url => url.pathname.includes('/reports'), {
         timeout: 10_000,
     });
 

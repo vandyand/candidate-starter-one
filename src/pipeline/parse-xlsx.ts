@@ -39,10 +39,7 @@ export interface ParseResult {
  * optionally filters out excluded columns, and builds one
  * Record<string, unknown> per data row (row 2+).
  */
-export async function parseXlsx(
-    filePath: string,
-    options?: ParseOptions,
-): Promise<ParseResult> {
+export async function parseXlsx(filePath: string, options?: ParseOptions): Promise<ParseResult> {
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(filePath);
 
@@ -63,7 +60,7 @@ export async function parseXlsx(
 
     // Apply column exclusions.
     const excluded = new Set(options?.excludeColumns ?? []);
-    const columns = allColumns.filter((c) => !excluded.has(c.name));
+    const columns = allColumns.filter(c => !excluded.has(c.name));
 
     // Read data rows (row 2+).
     const rawRowCount = Math.max(0, worksheet.rowCount - 1);
@@ -88,7 +85,7 @@ export async function parseXlsx(
     }
 
     return {
-        columns: columns.map((c) => c.name),
+        columns: columns.map(c => c.name),
         rows,
         rawRowCount,
     };

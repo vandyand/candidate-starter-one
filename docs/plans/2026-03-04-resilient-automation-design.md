@@ -11,20 +11,21 @@ A Playwright-based automation solution that authenticates against a healthcare r
 ## Target System
 
 Six report types, each with:
+
 - PrimeNG data tables (4000 rows, paginated at 25/page)
 - Date range pickers (From/To comboboxes)
 - Dropdown filters (Status, Payer, Denial Code, etc.)
 - Sortable columns
 - XLSX download button
 
-| Report | Path | Filters | Columns |
-|--------|------|---------|---------|
-| Claim Status | /reports/claims | Date range, Status, Payer | Claim ID, Patient, Payer, DoS, Billed, Status, Paid, Denial Reason |
-| Encounters | /reports/encounters | Date range, dropdown(s) | TBD on exploration |
-| Current AR | /reports/ar | Date range, dropdown(s) | TBD on exploration |
-| Remittance / Payments | /reports/remittance | Date range, dropdown(s) | TBD on exploration |
-| Denials | /reports/denials | Date range, Denial Code, Payer | Claim ID, Denial Code, Reason, Payer, Billed, Denial Date, Action Required |
-| Prior Authorizations | /reports/authorizations | Date range, dropdown(s) | TBD on exploration |
+| Report                | Path                    | Filters                        | Columns                                                                    |
+| --------------------- | ----------------------- | ------------------------------ | -------------------------------------------------------------------------- |
+| Claim Status          | /reports/claims         | Date range, Status, Payer      | Claim ID, Patient, Payer, DoS, Billed, Status, Paid, Denial Reason         |
+| Encounters            | /reports/encounters     | Date range, dropdown(s)        | TBD on exploration                                                         |
+| Current AR            | /reports/ar             | Date range, dropdown(s)        | TBD on exploration                                                         |
+| Remittance / Payments | /reports/remittance     | Date range, dropdown(s)        | TBD on exploration                                                         |
+| Denials               | /reports/denials        | Date range, Denial Code, Payer | Claim ID, Denial Code, Reason, Payer, Billed, Denial Date, Action Required |
+| Prior Authorizations  | /reports/authorizations | Date range, dropdown(s)        | TBD on exploration                                                         |
 
 ## Architecture
 
@@ -51,15 +52,19 @@ Six report types, each with:
 The core framework. A `ResilientLocator` provides a unified interface that cascades through 4 tiers, logging resolution details at each step.
 
 ### Tier 1 — User-Facing Locators
+
 Role-based (`getByRole`), text-based (`getByText`), label-based (`getByLabel`), and test-ID (`getByTestId`). These mirror user perception rather than DOM implementation. The accessibility tree is the primary navigation model — more stable than DOM, maps directly to Playwright's locator APIs, dramatically smaller representation.
 
 ### Tier 2 — Anchor-Based Recovery
+
 Identify stable anchor elements (headings, navigation landmarks, section labels) and locate targets by spatial/structural relationship (`near`, `below`, `above`, `within`, `sibling`). Survives layout refactors because semantic relationships persist even when DOM positions change.
 
 ### Tier 3 — Algorithmic Fuzzy Matching
+
 When user-facing and anchor-based approaches fail, scan the DOM for candidates, build feature vectors (tag name, class list, attributes, position, visible text), and score using Jaro-Winkler distance and weighted attribute matching. Apply a confidence threshold (default 0.7) — proceed above it, flag for review below.
 
 ### Tier 4 — Machine Vision (GLM-OCR)
+
 Last-resort tier. Capture a screenshot, send to a GLM-OCR endpoint (0.9B parameter model hosted on HuggingFace Inference Endpoint), get text locations, and interact by coordinates. Highest latency (1-5s) but demonstrates understanding of the full resilience spectrum.
 
 ### Cascade Logic
@@ -82,37 +87,37 @@ Every resolution is logged as a JSONL event with tier, confidence, timing, and f
 
 ```typescript
 interface LocatorSpec {
-  description: string;       // Human-readable: "the Sign In button"
-  tier1?: {
-    role?: { role: string; name?: string };
-    text?: string;
-    label?: string;
-    testId?: string;
-  };
-  tier2?: {
-    anchor: LocatorSpec;
-    relationship: 'near' | 'below' | 'above' | 'within' | 'sibling';
-    target?: { role?: string; text?: string };
-  };
-  tier3?: {
-    tag?: string;
-    attributes?: Record<string, string>;
-    visibleText?: string;
-    minConfidence?: number;
-  };
-  tier4?: {
-    searchText: string;
-    region?: { x: number; y: number; width: number; height: number };
-  };
+    description: string; // Human-readable: "the Sign In button"
+    tier1?: {
+        role?: { role: string; name?: string };
+        text?: string;
+        label?: string;
+        testId?: string;
+    };
+    tier2?: {
+        anchor: LocatorSpec;
+        relationship: 'near' | 'below' | 'above' | 'within' | 'sibling';
+        target?: { role?: string; text?: string };
+    };
+    tier3?: {
+        tag?: string;
+        attributes?: Record<string, string>;
+        visibleText?: string;
+        minConfidence?: number;
+    };
+    tier4?: {
+        searchText: string;
+        region?: { x: number; y: number; width: number; height: number };
+    };
 }
 
 interface LocatorResult {
-  element: Locator;
-  tier: 1 | 2 | 3 | 4;
-  confidence: number;
-  strategy: string;
-  latencyMs: number;
-  alternatives: number;
+    element: Locator;
+    tier: 1 | 2 | 3 | 4;
+    confidence: number;
+    strategy: string;
+    latencyMs: number;
+    alternatives: number;
 }
 ```
 
@@ -128,31 +133,31 @@ interface LocatorResult {
 ```yaml
 # config/reports.yaml
 reports:
-  - name: Claim Status
-    slug: claim-status
-    path: /reports/claims
-    filters:
-      - type: dateRange
-        from: "2024-08-01"
-        to: "2025-02-01"
-      - type: dropdown
-        label: Status
-        value: Denied
-    columns:
-      exclude: []
-    validation:
-      minRows: 1
-      crossRef:
-        target: denials
-        key: Claim ID
-  # ... all 6 reports
+    - name: Claim Status
+      slug: claim-status
+      path: /reports/claims
+      filters:
+          - type: dateRange
+            from: '2024-08-01'
+            to: '2025-02-01'
+          - type: dropdown
+            label: Status
+            value: Denied
+      columns:
+          exclude: []
+      validation:
+          minRows: 1
+          crossRef:
+              target: denials
+              key: Claim ID
+    # ... all 6 reports
 
 periods:
-  - from: "2024-08-01"
-    to: "2025-02-01"
-  - from: "2025-01-01"
-    to: "2025-08-01"
-  # Intentional overlap for dedup demonstration
+    - from: '2024-08-01'
+      to: '2025-02-01'
+    - from: '2025-01-01'
+      to: '2025-08-01'
+    # Intentional overlap for dedup demonstration
 ```
 
 Adding a new report = adding a YAML block. Zero code changes to the orchestrator.
@@ -169,14 +174,14 @@ Adding a new report = adding a YAML block. Zero code changes to the orchestrator
 
 ```json
 {
-  "reportType": "claim-status",
-  "extractedAt": "2026-03-04T12:00:00Z",
-  "filters": { "dateRange": ["2024-08-01", "2025-02-01"], "status": "Denied" },
-  "rowCount": 847,
-  "columns": ["Claim ID", "Patient", "Payer", "..."],
-  "locatorResolution": { "tier1": 12, "tier2": 2, "tier3": 0, "tier4": 0 },
-  "durationMs": 4500,
-  "deduplication": { "beforeCount": 900, "afterCount": 847, "removed": 53 }
+    "reportType": "claim-status",
+    "extractedAt": "2026-03-04T12:00:00Z",
+    "filters": { "dateRange": ["2024-08-01", "2025-02-01"], "status": "Denied" },
+    "rowCount": 847,
+    "columns": ["Claim ID", "Patient", "Payer", "..."],
+    "locatorResolution": { "tier1": 12, "tier2": 2, "tier3": 0, "tier4": 0 },
+    "durationMs": 4500,
+    "deduplication": { "beforeCount": 900, "afterCount": 847, "removed": 53 }
 }
 ```
 

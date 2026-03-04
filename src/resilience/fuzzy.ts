@@ -61,10 +61,7 @@ export function jaroWinkler(s1: string, s2: string): number {
     }
 
     const jaro =
-        (matches / s1.length +
-            matches / s2.length +
-            (matches - transpositions / 2) / matches) /
-        3;
+        (matches / s1.length + matches / s2.length + (matches - transpositions / 2) / matches) / 3;
 
     // Winkler boost for shared prefix (up to 4 characters)
     let prefixLen = 0;
@@ -114,8 +111,7 @@ export function scoreCandidates(
 
     const scored: ScoredCandidate[] = candidates.map((candidate, index) => {
         // Tag score: 1.0 if exact match, 0.0 otherwise
-        const tagScore =
-            target.tag !== undefined && candidate.tag === target.tag ? 1.0 : 0.0;
+        const tagScore = target.tag !== undefined && candidate.tag === target.tag ? 1.0 : 0.0;
 
         // Text score: jaroWinkler similarity, 0.0 if either is missing
         let textScore = 0.0;
@@ -142,10 +138,7 @@ export function scoreCandidates(
             }
         }
 
-        const score =
-            WEIGHT_TAG * tagScore +
-            WEIGHT_TEXT * textScore +
-            WEIGHT_ATTR * attrScore;
+        const score = WEIGHT_TAG * tagScore + WEIGHT_TEXT * textScore + WEIGHT_ATTR * attrScore;
 
         return {
             index,

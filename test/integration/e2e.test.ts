@@ -1,3 +1,23 @@
+// Copyright 2025-2026 Lockbox AI, Inc.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
+
 import * as fs from 'fs';
 import * as path from 'path';
 import { chromium, type Browser, type BrowserContext, type Page } from 'playwright';
@@ -41,7 +61,7 @@ describeIntegration('E2E Integration', () => {
 
     it('should extract Claim Status report with filters', async () => {
         const config = loadConfig();
-        const report = config.reports.find((r) => r.slug === 'claim-status')!;
+        const report = config.reports.find(r => r.slug === 'claim-status')!;
         const result = await extractReport(
             page,
             locator,
@@ -57,7 +77,7 @@ describeIntegration('E2E Integration', () => {
 
     it('should extract Denials report', async () => {
         const config = loadConfig();
-        const report = config.reports.find((r) => r.slug === 'denials')!;
+        const report = config.reports.find(r => r.slug === 'denials')!;
         const result = await extractReport(
             page,
             locator,

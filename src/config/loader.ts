@@ -36,8 +36,7 @@ import type { WorkflowConfig } from '../types/index.js';
  * - `CONFIDENCE_THRESHOLD`  -> `settings.confidenceThreshold`
  */
 export function loadConfig(configPath?: string): WorkflowConfig {
-    const resolvedPath =
-        configPath ?? path.resolve(process.cwd(), 'config', 'reports.yaml');
+    const resolvedPath = configPath ?? path.resolve(process.cwd(), 'config', 'reports.yaml');
 
     const raw = fs.readFileSync(resolvedPath, 'utf-8');
     const config = yaml.load(raw) as WorkflowConfig;

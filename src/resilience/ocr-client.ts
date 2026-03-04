@@ -53,9 +53,7 @@ export async function findTextInScreenshot(
     const resolvedEndpoint = endpoint ?? process.env.GLM_OCR_ENDPOINT;
 
     if (!resolvedEndpoint) {
-        logger.warn(
-            'No GLM-OCR endpoint configured — skipping vision-based locator',
-        );
+        logger.warn('No GLM-OCR endpoint configured — skipping vision-based locator');
         return NOT_FOUND;
     }
 
@@ -72,26 +70,26 @@ export async function findTextInScreenshot(
         });
 
         if (!response.ok) {
-            logger.warn(
-                `OCR endpoint returned HTTP ${response.status}`,
-            );
+            logger.warn(`OCR endpoint returned HTTP ${response.status}`);
             return NOT_FOUND;
         }
 
-        let data = await response.json();
+        let data: unknown = await response.json();
 
         // Handle string responses by attempting JSON.parse
         if (typeof data === 'string') {
             data = JSON.parse(data);
         }
 
+        const obj = data as Record<string, unknown>;
+
         return {
-            found: Boolean(data.found),
-            x: Number(data.x) || 0,
-            y: Number(data.y) || 0,
-            width: Number(data.width) || 0,
-            height: Number(data.height) || 0,
-            confidence: Number(data.confidence) || 0,
+            found: Boolean(obj.found),
+            x: Number(obj.x) || 0,
+            y: Number(obj.y) || 0,
+            width: Number(obj.width) || 0,
+            height: Number(obj.height) || 0,
+            confidence: Number(obj.confidence) || 0,
         };
     } catch (error) {
         logger.error('OCR request failed', {

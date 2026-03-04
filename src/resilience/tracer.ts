@@ -91,8 +91,7 @@ export class ExecutionTracer {
 
         // Running average: newAvg = oldAvg + (value - oldAvg) / n
         entry.averageConfidence =
-            entry.averageConfidence +
-            (confidence - entry.averageConfidence) / entry.totalAttempts;
+            entry.averageConfidence + (confidence - entry.averageConfidence) / entry.totalAttempts;
 
         entry.lastUsed = now;
     }
@@ -102,7 +101,7 @@ export class ExecutionTracer {
         if (this.events.length > 0) {
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const traceFile = path.join(this.tracesDir, `execution-${timestamp}.jsonl`);
-            const lines = this.events.map((e) => JSON.stringify(e)).join('\n');
+            const lines = this.events.map(e => JSON.stringify(e)).join('\n');
             fs.writeFileSync(traceFile, lines + '\n', 'utf-8');
             logger.debug(`Flushed ${this.events.length} trace events`, { traceFile });
         }

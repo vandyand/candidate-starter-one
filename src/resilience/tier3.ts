@@ -56,9 +56,9 @@ export async function resolveTier3(
     for (let i = 0; i < scanCount; i++) {
         const el = elements.nth(i);
 
-        const tag: string = await el.evaluate((e) => e.tagName.toLowerCase());
-        const text: string = await el.evaluate((e) =>
-            (e as HTMLElement).innerText?.trim() ?? '',
+        const tag: string = await el.evaluate(e => e.tagName.toLowerCase());
+        const text: string = await el.evaluate(
+            e => (e as unknown as { innerText?: string }).innerText?.trim() ?? '',
         );
 
         const attrs: Record<string, string> = {};
@@ -105,8 +105,6 @@ export async function resolveTier3(
         };
     }
 
-    logger.debug(
-        `No Tier 3 match for "${spec.description}" above threshold ${threshold}`,
-    );
+    logger.debug(`No Tier 3 match for "${spec.description}" above threshold ${threshold}`);
     return null;
 }

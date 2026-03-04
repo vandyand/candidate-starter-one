@@ -30,12 +30,14 @@ function createMockLocator(count: number): Locator {
     return locator;
 }
 
-function createMockPage(overrides: {
-    getByRole?: Locator;
-    getByText?: Locator;
-    getByLabel?: Locator;
-    getByTestId?: Locator;
-} = {}): Page {
+function createMockPage(
+    overrides: {
+        getByRole?: Locator;
+        getByText?: Locator;
+        getByLabel?: Locator;
+        getByTestId?: Locator;
+    } = {},
+): Page {
     const noMatch = createMockLocator(0);
     return {
         getByRole: jest.fn().mockReturnValue(overrides.getByRole ?? noMatch),

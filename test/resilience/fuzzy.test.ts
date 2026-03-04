@@ -18,10 +18,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import {
-    jaroWinkler,
-    scoreCandidates,
-} from '../../src/resilience/fuzzy';
+import { jaroWinkler, scoreCandidates } from '../../src/resilience/fuzzy';
 import type { CandidateFeatures } from '../../src/resilience/fuzzy';
 
 describe('jaroWinkler', () => {

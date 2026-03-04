@@ -97,9 +97,7 @@ describe('applyFilters', () => {
 
         (page.getByText as jest.Mock).mockReturnValue({ click: optionClick });
 
-        const filters: FilterConfig[] = [
-            { type: 'dropdown', label: 'Status', value: 'Pending' },
-        ];
+        const filters: FilterConfig[] = [{ type: 'dropdown', label: 'Status', value: 'Pending' }];
 
         await applyFilters(page, mockLocator, filters);
 

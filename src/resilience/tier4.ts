@@ -29,10 +29,7 @@ const logger = createLogger('Tier4');
  * Tier 4 resolution: captures a screenshot and uses GLM-OCR vision to locate
  * text on the page when all semantic/DOM-based tiers have failed.
  */
-export async function resolveTier4(
-    page: Page,
-    spec: LocatorSpec,
-): Promise<LocatorResult | null> {
+export async function resolveTier4(page: Page, spec: LocatorSpec): Promise<LocatorResult | null> {
     if (spec.tier4 === undefined) {
         return null;
     }
@@ -41,7 +38,10 @@ export async function resolveTier4(
     const tier4 = spec.tier4;
 
     try {
-        const screenshotOptions: { type: 'png'; clip?: { x: number; y: number; width: number; height: number } } = {
+        const screenshotOptions: {
+            type: 'png';
+            clip?: { x: number; y: number; width: number; height: number };
+        } = {
             type: 'png',
         };
 

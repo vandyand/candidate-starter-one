@@ -102,11 +102,7 @@ export class ResilientLocator {
         this.tracer.flush();
     }
 
-    private recordResolution(
-        spec: LocatorSpec,
-        result: LocatorResult,
-        start: number,
-    ): void {
+    private recordResolution(spec: LocatorSpec, result: LocatorResult, start: number): void {
         const tierKey = `tier${result.tier}`;
         this.stats[tierKey] += 1;
 
@@ -123,12 +119,7 @@ export class ResilientLocator {
             status,
         });
 
-        this.tracer.recordLocatorResolution(
-            spec.description,
-            result.tier,
-            result.confidence,
-            true,
-        );
+        this.tracer.recordLocatorResolution(spec.description, result.tier, result.confidence, true);
 
         if (result.tier > 1) {
             logger.warn(

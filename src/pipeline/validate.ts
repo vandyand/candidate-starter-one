@@ -36,9 +36,7 @@ export function validateRowCount(
     const warnings: string[] = [];
 
     if (rows.length < minRows) {
-        errors.push(
-            `Row count ${rows.length} is below minimum of ${minRows}`,
-        );
+        errors.push(`Row count ${rows.length} is below minimum of ${minRows}`);
     }
 
     return {
@@ -60,9 +58,7 @@ export function crossReferenceValidation(
     const errors: string[] = [];
     const warnings: string[] = [];
 
-    const targetKeys = new Set(
-        targetRows.map((row) => String(row[key] ?? '')),
-    );
+    const targetKeys = new Set(targetRows.map(row => String(row[key] ?? '')));
 
     const missingKeys: string[] = [];
     for (const row of sourceRows) {

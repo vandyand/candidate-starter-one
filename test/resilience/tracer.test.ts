@@ -72,10 +72,7 @@ describe('ExecutionTracer', () => {
         expect(traceFiles[0]).toMatch(/^execution-.*\.jsonl$/);
 
         // Verify JSONL content
-        const content = fs.readFileSync(
-            path.join(tmpDir, 'traces', traceFiles[0]),
-            'utf-8',
-        );
+        const content = fs.readFileSync(path.join(tmpDir, 'traces', traceFiles[0]), 'utf-8');
         const lines = content.trim().split('\n');
         expect(lines).toHaveLength(2);
         expect(JSON.parse(lines[0]).action).toBe('click');
@@ -86,8 +83,8 @@ describe('ExecutionTracer', () => {
         const tracer = new ExecutionTracer(tmpDir);
 
         tracer.recordLocatorResolution('Sign In button', 1, 0.95, true);
-        tracer.recordLocatorResolution('Sign In button', 1, 0.90, true);
-        tracer.recordLocatorResolution('Sign In button', 2, 0.80, true);
+        tracer.recordLocatorResolution('Sign In button', 1, 0.9, true);
+        tracer.recordLocatorResolution('Sign In button', 2, 0.8, true);
 
         const health = tracer.getHealth();
         const entry = health['Sign In button'];
@@ -98,7 +95,7 @@ describe('ExecutionTracer', () => {
         expect(entry.tierSuccesses[2]).toBe(1);
         expect(entry.tierFailures[1]).toBe(0);
         // Running average of 0.95, 0.90, 0.80
-        expect(entry.averageConfidence).toBeCloseTo((0.95 + 0.90 + 0.80) / 3, 5);
+        expect(entry.averageConfidence).toBeCloseTo((0.95 + 0.9 + 0.8) / 3, 5);
     });
 
     it('should load existing health file on creation', () => {

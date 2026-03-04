@@ -62,7 +62,7 @@ export async function login(
     await signInResult.element.click();
 
     // Wait for navigation away from the login page
-    await page.waitForURL((url) => !url.pathname.includes('/login'), {
+    await page.waitForURL(url => !url.pathname.includes('/login'), {
         timeout: 10_000,
     });
 
