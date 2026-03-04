@@ -18,7 +18,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-import { run } from './automation/example.js';
+import { run } from './automation/orchestrator.js';
 
-// eslint-disable-next-line no-console
-run().catch(console.error);
+(async () => {
+    try {
+        await run();
+    } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+        process.exit(1);
+    }
+})();
