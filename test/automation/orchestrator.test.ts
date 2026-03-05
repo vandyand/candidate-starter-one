@@ -150,7 +150,7 @@ describe('Orchestrator – run()', () => {
     it('launches browser, logs in, and closes browser', async () => {
         await run();
 
-        expect(chromium.launch).toHaveBeenCalledWith({ headless: true });
+        expect(chromium.launch).toHaveBeenCalledWith({ headless: true, slowMo: 0 });
         expect(login).toHaveBeenCalledWith(
             mockPage,
             expect.anything(),

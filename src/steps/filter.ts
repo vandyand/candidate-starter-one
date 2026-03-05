@@ -44,7 +44,20 @@ function toDisplayDate(isoDate: string): string {
 }
 
 /**
- * Applies a date-range filter by filling the From and To date picker inputs.
+ * Types a date into a PrimeNG Calendar input by clicking, selecting all,
+ * and typing character-by-character so Angular change detection fires.
+ */
+async function typeDateIntoInput(page: Page, element: LocatorResult['element'], date: string): Promise<void> {
+    await element.click();
+    // Select all existing text, then type over it
+    await page.keyboard.press('Control+a');
+    await page.keyboard.type(date, { delay: 30 });
+    // Brief pause to let Angular process the input
+    await page.waitForTimeout(200);
+}
+
+/**
+ * Applies a date-range filter by typing into the From and To date picker inputs.
  */
 async function applyDateRangeFilter(
     page: Page,
@@ -60,25 +73,26 @@ async function applyDateRangeFilter(
         await page.waitForTimeout(500);
     }
 
-    // Fill "From" date
+    // Type "From" date
     const fromResult = await locator.resolve(dateFilterSpec('From'));
     if (fromResult === null) {
         throw new Error('Failed to resolve "From" date picker');
     }
-    await fromResult.element.fill(toDisplayDate(filter.from));
+    await typeDateIntoInput(page, fromResult.element, toDisplayDate(filter.from));
 
-    // Fill "To" date
+    // Type "To" date
     const toResult = await locator.resolve(dateFilterSpec('To'));
     if (toResult === null) {
         throw new Error('Failed to resolve "To" date picker');
     }
-    await toResult.element.fill(toDisplayDate(filter.to));
+    await typeDateIntoInput(page, toResult.element, toDisplayDate(filter.to));
 
-    // Press Tab to trigger filter application
+    // Press Enter then Tab to commit the date and trigger filter application
+    await page.keyboard.press('Enter');
     await page.keyboard.press('Tab');
 
-    // Wait briefly for table to reload
-    await page.waitForTimeout(1000);
+    // Wait for table to reload
+    await page.waitForTimeout(1500);
 
     logger.info('Date range filter applied');
 }

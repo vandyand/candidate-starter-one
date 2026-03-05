@@ -44,6 +44,7 @@ function makePage(): Page {
         waitForTimeout: jest.fn().mockResolvedValue(undefined),
         keyboard: {
             press: jest.fn().mockResolvedValue(undefined),
+            type: jest.fn().mockResolvedValue(undefined),
         },
         getByText: jest.fn().mockReturnValue({
             click: jest.fn().mockResolvedValue(undefined),
@@ -83,11 +84,14 @@ describe('applyFilters', () => {
         await applyFilters(page, mockLocator, filters);
 
         expect(mockLocator.resolve).toHaveBeenCalledTimes(3);
-        // From field filled with MM/DD/YYYY format
-        expect(fromResult.element.fill).toHaveBeenCalledWith('01/01/2025');
-        // To field filled with MM/DD/YYYY format
-        expect(toResult.element.fill).toHaveBeenCalledWith('12/31/2025');
-        // Tab pressed to trigger filter
+        // From and To inputs clicked to focus
+        expect(fromResult.element.click).toHaveBeenCalled();
+        expect(toResult.element.click).toHaveBeenCalled();
+        // Dates typed via keyboard in MM/DD/YYYY format
+        expect(page.keyboard.type).toHaveBeenCalledWith('01/01/2025', { delay: 30 });
+        expect(page.keyboard.type).toHaveBeenCalledWith('12/31/2025', { delay: 30 });
+        // Enter + Tab pressed to commit and trigger filter
+        expect(page.keyboard.press).toHaveBeenCalledWith('Enter');
         expect(page.keyboard.press).toHaveBeenCalledWith('Tab');
     });
 
@@ -147,10 +151,11 @@ describe('applyFilters', () => {
         // 3 resolves for date range (clear + from + to) + 1 for dropdown = 4
         expect(mockLocator.resolve).toHaveBeenCalledTimes(4);
 
-        // Date range applied
-        expect(fromResult.element.fill).toHaveBeenCalledWith('06/01/2025');
-        expect(toResult.element.fill).toHaveBeenCalledWith('06/30/2025');
-        expect(page.keyboard.press).toHaveBeenCalledWith('Tab');
+        // Date range applied via keyboard typing
+        expect(fromResult.element.click).toHaveBeenCalled();
+        expect(toResult.element.click).toHaveBeenCalled();
+        expect(page.keyboard.type).toHaveBeenCalledWith('06/01/2025', { delay: 30 });
+        expect(page.keyboard.type).toHaveBeenCalledWith('06/30/2025', { delay: 30 });
 
         // Dropdown applied
         expect(dropdownResult.element.click).toHaveBeenCalled();

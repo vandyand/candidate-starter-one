@@ -110,7 +110,8 @@ export async function run(): Promise<void> {
     fs.mkdirSync(downloadsDir, { recursive: true });
 
     // Step 3: Launch browser
-    const browser = await chromium.launch({ headless: true });
+    const headless = process.env.HEADLESS !== 'false';
+    const browser = await chromium.launch({ headless, slowMo: headless ? 0 : 50 });
 
     try {
         const context = await browser.newContext({ acceptDownloads: true });
