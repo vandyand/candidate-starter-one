@@ -72,8 +72,22 @@ export async function resolveTier4(page: Page, spec: LocatorSpec): Promise<Locat
                 await page.mouse.click(clickX, clickY);
             },
             async fill(value: string): Promise<void> {
+                // Click the OCR-identified text (may be a label, not the input itself)
                 await page.mouse.click(clickX, clickY);
-                await page.keyboard.type(value);
+                // Find the currently focused element and fill it properly
+                // This handles cases where OCR finds a label but we need its input
+                await page.evaluate(`(val => {
+                    const el = document.activeElement;
+                    if (el && 'value' in el) {
+                        const setter = Object.getOwnPropertyDescriptor(
+                            HTMLInputElement.prototype, 'value'
+                        )?.set;
+                        if (setter) setter.call(el, val);
+                        else el.value = val;
+                        el.dispatchEvent(new Event('input', { bubbles: true }));
+                        el.dispatchEvent(new Event('change', { bubbles: true }));
+                    }
+                })(${JSON.stringify(value)})`);
             },
         } as unknown as Locator;
 
@@ -92,7 +106,7 @@ export async function resolveTier4(page: Page, spec: LocatorSpec): Promise<Locat
             element: pseudoLocator,
             tier: 4,
             confidence: ocrResult.confidence,
-            strategy: 'glm-ocr',
+            strategy: 'ocr-tesseract',
             latencyMs,
             alternatives: [],
         };

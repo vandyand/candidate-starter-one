@@ -33,7 +33,8 @@ const DEFAULT_TIMEOUT_MS = 30_000;
  * Clicks the Download XLSX button, waits for the browser download event,
  * and saves the file to `outputDir/filename`.
  *
- * @returns The absolute path to the saved file.
+ * @returns The absolute path to the saved file, or `null` if the download
+ *          did not trigger (e.g. empty result set).
  */
 export async function downloadReport(
     page: Page,
@@ -41,7 +42,7 @@ export async function downloadReport(
     outputDir: string,
     filename: string,
     timeoutMs?: number,
-): Promise<string> {
+): Promise<string | null> {
     const timeout = timeoutMs ?? DEFAULT_TIMEOUT_MS;
     logger.info('Starting XLSX download', { outputDir, filename, timeout });
 
@@ -58,13 +59,15 @@ export async function downloadReport(
     }
     await buttonResult.element.click();
 
-    // Wait for the download event
-    const download = await downloadPromise;
-
-    // Save the download to the target path
-    const filePath = join(outputDir, filename);
-    await download.saveAs(filePath);
-
-    logger.info('Download complete', { filePath });
-    return filePath;
+    // Wait for the download event — may not fire for empty result sets
+    try {
+        const download = await downloadPromise;
+        const filePath = join(outputDir, filename);
+        await download.saveAs(filePath);
+        logger.info('Download complete', { filePath });
+        return filePath;
+    } catch {
+        logger.warn('Download did not trigger (empty result set?)', { filename });
+        return null;
+    }
 }

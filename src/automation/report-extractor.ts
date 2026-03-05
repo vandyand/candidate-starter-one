@@ -80,6 +80,26 @@ export async function extractReport(
     const filename = `${report.slug}_${periodLabel}.xlsx`;
     const filePath = await downloadReport(page, locator, outputDir, filename);
 
+    // Handle empty result set (no download triggered)
+    if (filePath === null) {
+        logger.warn('No data downloaded for report period', {
+            slug: report.slug,
+            period: periodLabel,
+        });
+        const durationMs = Date.now() - startTime;
+        const metadata: ExtractionMetadata = {
+            reportType: report.slug,
+            extractedAt: new Date().toISOString(),
+            filters,
+            rowCount: 0,
+            columns: [],
+            locatorResolution: {},
+            durationMs,
+        };
+        writeOutput(outputDir, report.slug, periodLabel, [], metadata);
+        return { rows: [], metadata };
+    }
+
     // Step 5: Parse XLSX with column exclusions
     const parseResult = await parseXlsx(filePath, {
         excludeColumns: report.columns.exclude,

@@ -67,6 +67,13 @@ function buildStrategies(page: Page, tier1: Tier1Spec): Strategy[] {
         });
     }
 
+    if (tier1.css !== undefined) {
+        strategies.push({
+            name: `css("${tier1.css}")`,
+            locator: page.locator(tier1.css),
+        });
+    }
+
     return strategies;
 }
 

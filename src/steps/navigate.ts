@@ -45,44 +45,42 @@ export async function navigateToReports(page: Page, locator: ResilientLocator): 
 }
 
 /**
- * Navigates to a specific report page. First attempts direct URL navigation,
- * then falls back to clicking the report card from the Reports listing page.
+ * Navigates to a specific report page by clicking through the SPA.
+ * Direct URL navigation is avoided because the target app stores auth
+ * state in Angular memory — a full page load loses the session.
  */
 export async function navigateToReport(
     page: Page,
     locator: ResilientLocator,
     reportName: string,
-    reportPath: string,
-    baseUrl: string,
+    _reportPath: string,
+    _baseUrl: string,
 ): Promise<void> {
-    logger.info('Navigating to report', { reportName, reportPath });
+    logger.info('Navigating to report', { reportName });
 
-    // Attempt direct navigation
-    await page.goto(`${baseUrl}${reportPath}`);
-    await page.waitForLoadState('networkidle');
-
-    // Verify the heading matches the expected report name
+    // First, check if we're already on the right report page
     const heading = page.getByRole('heading', { name: reportName });
-    const headingVisible = await heading.isVisible().catch(() => false);
+    const alreadyThere = await heading.isVisible().catch(() => false);
 
-    if (headingVisible) {
-        logger.info('Navigated to report via direct URL', { reportName });
+    if (alreadyThere) {
+        logger.info('Already on the correct report page', { reportName });
         return;
     }
 
-    // Fallback: navigate through Reports page and click the card
-    logger.warn('Direct navigation did not reveal expected heading; falling back to card click', {
-        reportName,
-    });
-
+    // Navigate to Reports listing via the tab
     await navigateToReports(page, locator);
 
+    // Click the report card
     const cardResult = await locator.resolve(reportCardSpec(reportName));
     if (cardResult === null) {
         throw new Error(`Failed to resolve report card for "${reportName}"`);
     }
     await cardResult.element.click();
 
+    // Wait for the report heading to appear (Angular SPA route change)
+    await page
+        .getByRole('heading', { name: reportName })
+        .waitFor({ state: 'visible', timeout: 10_000 });
     await page.waitForLoadState('networkidle');
     logger.info('Navigated to report via card click', { reportName });
 }

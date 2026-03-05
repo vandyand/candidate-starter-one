@@ -43,6 +43,8 @@ export interface Tier1Spec {
     text?: string;
     label?: string;
     testId?: string;
+    /** CSS selector fallback — last resort within Tier 1, lower confidence. */
+    css?: string;
 }
 
 /** Tier 2 — anchor-relative locator spec. */

@@ -86,18 +86,40 @@ export function crossReferenceValidation(
 }
 
 /**
+ * Find the actual column name in a row, matching case-insensitively.
+ * Returns the exact key as it exists in the row, or null if not found.
+ */
+function findColumn(row: Record<string, unknown>, keyColumn: string): string | null {
+    if (keyColumn in row) return keyColumn;
+    const lower = keyColumn.toLowerCase();
+    for (const k of Object.keys(row)) {
+        if (k.toLowerCase() === lower) return k;
+    }
+    return null;
+}
+
+/**
  * Deduplicate rows by a key column, keeping the first occurrence.
+ * If the key column is not found in the data, returns rows unchanged.
  */
 export function deduplicateRows(
     rows: Record<string, unknown>[],
     keyColumn: string,
 ): { rows: Record<string, unknown>[]; removed: number } {
+    if (rows.length === 0) return { rows: [], removed: 0 };
+
+    // Resolve actual column name (case-insensitive)
+    const actualKey = findColumn(rows[0], keyColumn);
+    if (actualKey === null) {
+        return { rows, removed: 0 };
+    }
+
     const seen = new Set<string>();
     const deduped: Record<string, unknown>[] = [];
     let removed = 0;
 
     for (const row of rows) {
-        const key = String(row[keyColumn] ?? '');
+        const key = String(row[actualKey] ?? '');
         if (seen.has(key)) {
             removed++;
         } else {

@@ -48,6 +48,10 @@ function makePage(): Page {
         getByText: jest.fn().mockReturnValue({
             click: jest.fn().mockResolvedValue(undefined),
         }),
+        getByRole: jest.fn().mockReturnValue({
+            waitFor: jest.fn().mockResolvedValue(undefined),
+            click: jest.fn().mockResolvedValue(undefined),
+        }),
     } as unknown as Page;
 }
 
@@ -95,7 +99,10 @@ describe('applyFilters', () => {
             resolve: jest.fn().mockResolvedValue(dropdownResult),
         } as unknown as ResilientLocator;
 
-        (page.getByText as jest.Mock).mockReturnValue({ click: optionClick });
+        (page.getByRole as jest.Mock).mockReturnValue({
+            waitFor: jest.fn().mockResolvedValue(undefined),
+            click: optionClick,
+        });
 
         const filters: FilterConfig[] = [{ type: 'dropdown', label: 'Status', value: 'Pending' }];
 
@@ -105,9 +112,8 @@ describe('applyFilters', () => {
         expect(mockLocator.resolve).toHaveBeenCalledTimes(1);
         expect(dropdownResult.element.click).toHaveBeenCalled();
 
-        // Option selected by text
-        expect(page.getByText).toHaveBeenCalledWith('Pending', { exact: true });
-        expect(optionClick).toHaveBeenCalled();
+        // Option selected by role
+        expect(page.getByRole).toHaveBeenCalledWith('option', { name: 'Pending' });
     });
 
     it('should apply mixed filters in sequence', async () => {
@@ -126,7 +132,10 @@ describe('applyFilters', () => {
                 .mockResolvedValueOnce(dropdownResult), // Dropdown
         } as unknown as ResilientLocator;
 
-        (page.getByText as jest.Mock).mockReturnValue({ click: optionClick });
+        (page.getByRole as jest.Mock).mockReturnValue({
+            waitFor: jest.fn().mockResolvedValue(undefined),
+            click: optionClick,
+        });
 
         const filters: FilterConfig[] = [
             { type: 'dateRange', from: '2025-06-01', to: '2025-06-30' } as DateRangeFilter,
@@ -145,7 +154,6 @@ describe('applyFilters', () => {
 
         // Dropdown applied
         expect(dropdownResult.element.click).toHaveBeenCalled();
-        expect(page.getByText).toHaveBeenCalledWith('Medicare', { exact: true });
-        expect(optionClick).toHaveBeenCalled();
+        expect(page.getByRole).toHaveBeenCalledWith('option', { name: 'Medicare' });
     });
 });

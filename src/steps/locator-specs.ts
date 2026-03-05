@@ -34,7 +34,7 @@ export const loginSpecs = {
 
     passwordField: {
         description: 'Password input field',
-        tier1: { label: 'Password' },
+        tier1: { label: 'Password', css: 'input[type="password"]' },
         tier3: { tag: 'input', attributes: { type: 'password' } },
         tier4: { searchText: 'Password' },
     } satisfies LocatorSpec,
@@ -95,7 +95,7 @@ export function reportCardSpec(reportName: string): LocatorSpec {
 export function dateFilterSpec(label: string): LocatorSpec {
     return {
         description: `Date filter: ${label}`,
-        tier1: { role: 'combobox', label },
+        tier1: { role: 'combobox', text: label },
         tier3: { tag: 'input', attributes: { placeholder: label } },
         tier4: { searchText: label },
     };
@@ -107,7 +107,7 @@ export function dateFilterSpec(label: string): LocatorSpec {
 export function dropdownFilterSpec(label: string, placeholder: string): LocatorSpec {
     return {
         description: `Dropdown filter: ${label}`,
-        tier1: { role: 'combobox', label: placeholder },
+        tier1: { role: 'combobox', text: placeholder },
         tier3: { tag: 'p-dropdown', attributes: { placeholder } },
         tier4: { searchText: placeholder },
     };

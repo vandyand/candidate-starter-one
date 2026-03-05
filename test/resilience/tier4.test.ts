@@ -77,7 +77,7 @@ describe('resolveTier4', () => {
         expect(result).not.toBeNull();
         expect(result!.tier).toBe(4);
         expect(result!.confidence).toBe(0.85);
-        expect(result!.strategy).toBe('glm-ocr');
+        expect(result!.strategy).toBe('ocr-tesseract');
         expect(result!.alternatives).toEqual([]);
 
         // Verify the pseudo-locator click method works

@@ -105,8 +105,9 @@ async function applyDropdownFilter(
     }
     await dropdownResult.element.click();
 
-    // Select the option from the overlay
-    const option = page.getByText(filter.value, { exact: true });
+    // Select the option from the PrimeNG dropdown overlay
+    const option = page.getByRole('option', { name: filter.value });
+    await option.waitFor({ state: 'visible', timeout: 5_000 });
     await option.click();
 
     // Wait for table to reload

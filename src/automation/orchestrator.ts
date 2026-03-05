@@ -173,8 +173,15 @@ export async function run(): Promise<void> {
             if (removed > 0) {
                 logger.info('Deduplicated rows', {
                     report: report.slug,
+                    keyColumn: primaryKey,
                     removed,
                     remaining: dedupedRows.length,
+                });
+            } else if (allRows.length > 0) {
+                logger.info('No duplicates found', {
+                    report: report.slug,
+                    keyColumn: primaryKey,
+                    totalRows: allRows.length,
                 });
             }
 
