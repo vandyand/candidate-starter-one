@@ -163,12 +163,6 @@ Every run generates a full Playwright trace at `output/traces/playwright-trace.z
 
 The trace viewer shows every navigation, click, and keyboard input with DOM snapshots — useful for verifying filter application, download triggers, and SPA navigation.
 
-You can also watch the automation live (requires a display server / WSLg):
-
-```bash
-HEADLESS=false yarn dev
-```
-
 ## Design Documents
 
 - [Design Document](docs/plans/2026-03-04-resilient-automation-design.md) — Architecture decisions, trade-offs, and alternatives considered
