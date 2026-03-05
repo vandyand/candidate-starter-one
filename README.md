@@ -128,22 +128,30 @@ output/
 ```bash
 yarn test                # 71 unit tests (Playwright mocked, no browser needed)
 yarn test:integration    # E2E tests against live target (requires RUN_INTEGRATION=true)
+yarn test:ocr            # OCR integration tests (requires ocr-proxy running)
 ```
 
 Unit tests mock the Playwright browser API so no real browser is needed in CI. The test suite covers all 4 resilience tiers, the cascade orchestrator, automation steps, data pipeline, and config loading.
 
-## Tier 4: GLM-OCR Vision Fallback
+## Tier 4: Tesseract OCR Vision Fallback
 
-The system optionally integrates [GLM-OCR](https://huggingface.co/zai-org/GLM-OCR) (0.9B parameters) as a vision-based last resort. When all CSS/DOM-based strategies fail, it takes a screenshot, sends it to the OCR model, and uses returned coordinates to interact with the element.
-
-See `scripts/deploy-ocr.sh` for deployment instructions on HuggingFace Inference Endpoints.
+When all CSS/DOM-based strategies (Tiers 1-3) fail, Tier 4 takes a screenshot and uses OCR to find elements by their visible text. This is implemented as a lightweight **FastAPI + Tesseract** proxy service that returns bounding box coordinates.
 
 ```bash
-# Enable by setting the endpoint
-export GLM_OCR_ENDPOINT=https://your-endpoint.us-east-1.aws.endpoints.huggingface.cloud
+# Prerequisites
+sudo apt-get install -y tesseract-ocr
+pip3 install pytesseract --break-system-packages
+
+# Start the OCR proxy (runs on http://127.0.0.1:7899)
+python3 scripts/ocr-proxy.py &
+
+# Run the automation — Tier 4 is now available
+yarn dev
 ```
 
-The system gracefully degrades when no endpoint is configured — Tier 4 simply returns "not found" and the locator reports the failure.
+The proxy auto-upscales small screenshots for better OCR accuracy (~300ms per call). See `scripts/deploy-ocr.sh` for full setup details.
+
+The system gracefully degrades when no OCR proxy is running — Tier 4 simply returns "not found" and the locator reports the failure.
 
 ## Design Documents
 

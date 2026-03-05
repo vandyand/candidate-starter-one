@@ -1,53 +1,88 @@
 #!/usr/bin/env bash
-# GLM-OCR Deployment Guide
-# ========================
+# Tier 4 OCR Setup Guide
+# =======================
 #
-# This script documents how to deploy GLM-OCR (0.9B parameters) on HuggingFace
-# Inference Endpoints for use as the Tier 4 vision fallback.
+# The Tier 4 vision-based locator uses Tesseract OCR to find text on
+# screenshots when all CSS/DOM-based strategies (Tiers 1-3) fail.
 #
-# GLM-OCR was chosen because:
-# - 0.9B parameters — tiny enough to run on minimal GPU
-# - 94.62% on OmniDocBench V1.5 (top-ranked for its size class)
-# - Supports deployment via vLLM, SGLang, and Ollama
-# - Fast inference: ~1.86 pages/second for PDFs
+# Architecture:
+#   Playwright screenshot → OCR Proxy (FastAPI + Tesseract) → bounding box coords
 #
-# Deployment Steps:
+# The OCR proxy (scripts/ocr-proxy.py) is a lightweight FastAPI service that:
+# 1. Receives a base64-encoded screenshot + search query
+# 2. Upscales small images for better OCR accuracy
+# 3. Runs Tesseract to extract word-level bounding boxes
+# 4. Searches for the query text and returns coordinates
 #
-# 1. Go to https://ui.endpoints.huggingface.co/new
-# 2. Select model: zai-org/GLM-OCR
-# 3. Choose a region close to your target (us-east-1 recommended)
-# 4. Select GPU: nvidia-l4 (cheapest option with enough VRAM for 0.9B model)
-# 5. Set scaling to min 0 / max 1 instances (scale-to-zero for cost savings)
-# 6. Deploy and wait for the endpoint to become active
-# 7. Copy the endpoint URL
-# 8. Set GLM_OCR_ENDPOINT in your .env file:
+# Prerequisites:
+#   sudo apt-get install -y tesseract-ocr     # System OCR engine
+#   pip3 install pytesseract --break-system-packages  # Python wrapper
+#   pip3 install fastapi uvicorn pillow --break-system-packages  # Already installed
 #
-#    GLM_OCR_ENDPOINT=https://your-endpoint-id.us-east-1.aws.endpoints.huggingface.cloud
+# Quick Start:
+#   python3 scripts/ocr-proxy.py              # Starts on http://127.0.0.1:7899
+#   yarn dev                                  # Run automation — Tier 4 is available
 #
-# Alternative: Local Deployment via Ollama
+# Or use the npm script:
+#   yarn ocr-proxy &                          # Start proxy in background
+#   yarn dev                                  # Run automation
 #
-# If you have a local GPU:
-#   ollama pull glm-ocr
-#   ollama serve
-#   # Set GLM_OCR_ENDPOINT=http://localhost:11434/api/generate
-#
-# Cost Considerations:
-# - HuggingFace Inference Endpoints: ~$0.60/hr for nvidia-l4
-# - With scale-to-zero, you only pay when the model is active
-# - Each OCR call adds 1-5 seconds of latency (Tier 4 is last resort)
-# - The system gracefully degrades when no endpoint is configured
+# Configuration:
+#   The OCR client defaults to http://127.0.0.1:7899/ocr
+#   Override via environment variable:
+#     OCR_ENDPOINT=http://your-custom-endpoint/ocr
 #
 # Testing:
-#   export GLM_OCR_ENDPOINT=https://your-endpoint-url
-#   yarn dev  # Run automation — Tier 4 will be available
+#   python3 scripts/ocr-proxy.py &            # Start proxy
+#   yarn test:ocr                             # Run OCR integration tests
+#
+# API:
+#   POST /ocr
+#   Body: {"image": "<base64-png>", "query": "Sign In"}
+#   Response: {"found": true, "x": 450, "y": 320, "width": 80, "height": 24, "confidence": 0.96}
+#
+#   GET /health
+#   Response: {"status": "ok", "engine": "tesseract"}
+#
+# Performance:
+#   - ~300ms per OCR call (including upscaling)
+#   - Tesseract works best with images >= 300 DPI
+#   - The proxy auto-upscales small screenshots for accuracy
+#   - Tier 4 is the last resort — only invoked after Tiers 1-3 fail
 
-echo "GLM-OCR Deployment Guide"
-echo "========================"
+set -euo pipefail
+
+echo "Tier 4 OCR Setup"
+echo "================"
 echo ""
-echo "Model:    zai-org/GLM-OCR (0.9B parameters)"
-echo "Platform: HuggingFace Inference Endpoints"
-echo "GPU:      nvidia-l4 (recommended)"
+
+# Check prerequisites
+if command -v tesseract &>/dev/null; then
+    echo "✓ Tesseract $(tesseract --version 2>&1 | head -1)"
+else
+    echo "✗ Tesseract not installed"
+    echo "  Run: sudo apt-get install -y tesseract-ocr"
+    exit 1
+fi
+
+if python3 -c "import pytesseract" 2>/dev/null; then
+    echo "✓ pytesseract installed"
+else
+    echo "✗ pytesseract not installed"
+    echo "  Run: pip3 install pytesseract --break-system-packages"
+    exit 1
+fi
+
+if python3 -c "import fastapi" 2>/dev/null; then
+    echo "✓ FastAPI installed"
+else
+    echo "✗ FastAPI not installed"
+    echo "  Run: pip3 install fastapi uvicorn --break-system-packages"
+    exit 1
+fi
+
 echo ""
-echo "See comments in this script for full deployment instructions."
+echo "All prerequisites met. Start the OCR proxy with:"
+echo "  python3 scripts/ocr-proxy.py"
 echo ""
-echo "Current GLM_OCR_ENDPOINT: ${GLM_OCR_ENDPOINT:-'(not configured — Tier 4 disabled)'}"
+echo "Current OCR_ENDPOINT: ${OCR_ENDPOINT:-'http://127.0.0.1:7899/ocr (default)'}"

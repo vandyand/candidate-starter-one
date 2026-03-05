@@ -40,8 +40,11 @@ export interface OCRResult {
     confidence: number;
 }
 
+const DEFAULT_OCR_ENDPOINT = 'http://127.0.0.1:7899/ocr';
+
 /**
- * Sends a screenshot to the GLM-OCR endpoint and searches for the given text.
+ * Sends a screenshot to the OCR proxy and searches for the given text.
+ * Defaults to the local Tesseract-based proxy at localhost:7899.
  * Returns coordinates and confidence if found, or a not-found result on any
  * failure or missing configuration.
  */
@@ -50,17 +53,20 @@ export async function findTextInScreenshot(
     searchText: string,
     endpoint?: string,
 ): Promise<OCRResult> {
-    const resolvedEndpoint = endpoint ?? process.env.GLM_OCR_ENDPOINT;
+    const resolvedEndpoint = endpoint ?? process.env.OCR_ENDPOINT ?? process.env.GLM_OCR_ENDPOINT;
 
     if (!resolvedEndpoint) {
-        logger.warn('No GLM-OCR endpoint configured — skipping vision-based locator');
-        return NOT_FOUND;
+        logger.debug(
+            'No OCR endpoint configured — trying default local proxy at ' + DEFAULT_OCR_ENDPOINT,
+        );
     }
+
+    const targetEndpoint = resolvedEndpoint || DEFAULT_OCR_ENDPOINT;
 
     try {
         const base64Image = screenshotBuffer.toString('base64');
 
-        const response = await fetch(resolvedEndpoint, {
+        const response = await fetch(targetEndpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({

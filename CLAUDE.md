@@ -21,6 +21,8 @@ yarn build            # Compile TypeScript to dist/
 yarn start            # Run compiled automation
 yarn test             # Run unit tests (71 tests, 15 suites)
 yarn test:integration # Run E2E tests against live target (requires RUN_INTEGRATION=true)
+yarn test:ocr         # Run OCR integration tests (requires ocr-proxy running)
+yarn ocr-proxy        # Start Tesseract OCR proxy on port 7899
 yarn lint             # ESLint
 yarn lint:fix         # ESLint with auto-fix
 yarn format           # Prettier
@@ -40,9 +42,9 @@ src/
 │   ├── tier1.ts                # User-facing: role/text/label/testId
 │   ├── tier2.ts                # Anchor-based: relative locators
 │   ├── tier3.ts                # Fuzzy: Jaro-Winkler DOM matching
-│   ├── tier4.ts                # Vision: GLM-OCR screenshot analysis
+│   ├── tier4.ts                # Vision: Tesseract OCR screenshot analysis
 │   ├── fuzzy.ts                # Jaro-Winkler + candidate scoring
-│   ├── ocr-client.ts           # GLM-OCR HTTP client
+│   ├── ocr-client.ts           # OCR proxy HTTP client
 │   └── tracer.ts               # JSONL trace events + locator health
 ├── steps/                      # Automation workflow steps
 │   ├── locator-specs.ts        # LocatorSpec definitions for all UI elements
@@ -77,14 +79,14 @@ src/
 
 ## Environment Variables
 
-| Variable               | Description                             | Default                 |
-| ---------------------- | --------------------------------------- | ----------------------- |
-| `TARGET_URL`           | Base URL of target application          | from config             |
-| `USERNAME`             | Login username                          | from config             |
-| `PASSWORD`             | Login password                          | from config             |
-| `CONFIDENCE_THRESHOLD` | Min confidence for fuzzy matching (0-1) | `0.7`                   |
-| `GLM_OCR_ENDPOINT`     | GLM-OCR API endpoint URL                | empty (Tier 4 disabled) |
-| `LOG_LEVEL`            | Logging level (debug/info/warn/error)   | `info`                  |
+| Variable               | Description                             | Default                     |
+| ---------------------- | --------------------------------------- | --------------------------- |
+| `TARGET_URL`           | Base URL of target application          | from config                 |
+| `USERNAME`             | Login username                          | from config                 |
+| `PASSWORD`             | Login password                          | from config                 |
+| `CONFIDENCE_THRESHOLD` | Min confidence for fuzzy matching (0-1) | `0.7`                       |
+| `OCR_ENDPOINT`         | OCR proxy endpoint URL                  | `http://127.0.0.1:7899/ocr` |
+| `LOG_LEVEL`            | Logging level (debug/info/warn/error)   | `info`                      |
 
 ## Output Structure
 
