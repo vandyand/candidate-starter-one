@@ -19,7 +19,7 @@ A **4-tier locator cascade** that progressively falls back through increasingly 
 | **1** | User-facing (role, text, label, testId)         | 0.95       | ~ms   |
 | **2** | Anchor-based (relative to stable landmarks)     | 0.85       | ~ms   |
 | **3** | Fuzzy matching (Jaro-Winkler on DOM candidates) | variable   | ~50ms |
-| **4** | Vision/OCR (screenshot → GLM-OCR → coordinates) | 0.70       | ~2s   |
+| **4** | Vision/OCR (screenshot → Tesseract → coordinates) | 0.70       | ~2s   |
 
 Every UI interaction flows through `ResilientLocator.resolve()`. When Tier 1 selectors break, the system automatically tries anchoring, fuzzy matching, and finally vision-based OCR — logging degradation events for observability.
 
@@ -152,6 +152,22 @@ yarn dev
 The proxy auto-upscales small screenshots for better OCR accuracy (~300ms per call). See `scripts/deploy-ocr.sh` for full setup details.
 
 The system gracefully degrades when no OCR proxy is running — Tier 4 simply returns "not found" and the locator reports the failure.
+
+## Playwright Traces
+
+Every run generates a full Playwright trace at `output/traces/playwright-trace.zip`. To inspect the automation step-by-step with screenshots:
+
+1. Run `yarn dev` to generate a trace
+2. Open [trace.playwright.dev](https://trace.playwright.dev) in your browser
+3. Drag in the `output/traces/playwright-trace.zip` file
+
+The trace viewer shows every navigation, click, and keyboard input with DOM snapshots — useful for verifying filter application, download triggers, and SPA navigation.
+
+You can also watch the automation live (requires a display server / WSLg):
+
+```bash
+HEADLESS=false yarn dev
+```
 
 ## Design Documents
 
